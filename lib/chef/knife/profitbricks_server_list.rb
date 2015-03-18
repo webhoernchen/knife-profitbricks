@@ -21,14 +21,16 @@ module KnifeProfitbricksFog
       Chef::Config[:solo] = true
       
       compute.datacenters.each do |dc|
-        log "Name: #{dc.name}"
+        log "DC: #{dc.name}"
 
         compute.servers.all.select {|s| s.data_center_id == dc.id }.each do |server|
-          log " * Name: #{server.name}"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{server.interfaces.first.ips}; #{server.machine_state})"
 
-          compute.volumes.all.select {|s| s.data_center_id == dc.id }.each do |volume|
-            log "   * Name: #{volume.name}"
+          compute.volumes.all.select {|s| s.server_ids == server.id }.each do |volume|
+            log "   * Volume: #{volume.name} (#{volume.size} GB)"
           end
+          
+          log ""
         end
       end
     end
