@@ -14,4 +14,4 @@ Manage the server node at profitbricks with knife solo
        * -account account
  * List all the servers in all data centers (as wiki format)
 
- ...knife profitbricks server list
+ knife profitbricks server list
