@@ -1,5 +1,5 @@
 module KnifeProfitbricksFog
-  module Config
+  module DataCenter
 
     private
     def dc_name

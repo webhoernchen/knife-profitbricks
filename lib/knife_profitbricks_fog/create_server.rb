@@ -85,26 +85,5 @@ module KnifeProfitbricksFog
 
       server
     end
-
-    def server_available_by_ssh?
-      5.times.detect { ssh_test } 
-    end
-
-    def check_server_state!
-      server.reload
-      log server.machine_state
-      
-      unless server.machine_state == 'RUNNING'
-        log "Server is not running. Try start!"
-        server.start
-        server.wait_for { ready? }
-      end
-
-      if server.machine_state == 'RUNNING' && server_available_by_ssh?
-        log "Server is running."
-      else
-        error "Can not start server!"
-      end
-    end
   end
 end

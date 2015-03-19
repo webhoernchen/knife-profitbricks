@@ -25,6 +25,10 @@ module KnifeProfitbricksFog
       server_config['name']
     end
 
+    def server_ip
+      server && server.interfaces.first.ips
+    end
+
     def boot_image_name
       @image_name ||= Chef::Config[:knife][:profitbricks_image]
     end
