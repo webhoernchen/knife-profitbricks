@@ -53,13 +53,15 @@ Add the following profitbricks config to your node:
 ```json
   "profitbricks": {
     "dc": "Data center name",
-    "region": "de/fkb", // https://devops.profitbricks.com/api/soap/#create-a-data-center => locations
+    // https://devops.profitbricks.com/api/soap/#create-a-data-center => locations
+    "region": "de/fkb", 
     "server": {
       "name": "name_of_the_server",
       "cores": 1,
       "ram_in_gb": 1,
       "volumes": {
-        "root": 10, // Name of the volume and size in GB; Root is the boot volume
+        // Name of the volume and size in GB; Root is the boot volume
+        "root": 10, 
         "application": 10,
         "mysql": 3
       }
