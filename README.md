@@ -18,9 +18,9 @@ As data bag
    ```
 
   * or as parameter
-   * -account account
+    * -account account
   * data bags path
-   * data_bags/profitbricks
+    * data_bags/profitbricks
 
 ## List all the servers in all data centers
 
@@ -31,6 +31,13 @@ knife profitbricks server list
 Example:
 
  * DC: Data center 1
+  * Server: Server name 1 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
+     * Volume: Volume name 1 (5 GB)
+     * Volume: Volume name 2 (10 GB)
+  * Server: Server name 2 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
+     * Volume: Volume name 1 (5 GB)
+     * Volume: Volume name 2 (10 GB)
+ * DC: Data center 2
   * Server: Server name 1 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
      * Volume: Volume name 1 (5 GB)
      * Volume: Volume name 2 (10 GB)
