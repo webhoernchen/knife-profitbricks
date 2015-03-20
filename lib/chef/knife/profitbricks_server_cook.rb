@@ -46,11 +46,11 @@ module KnifeProfitbricksFog
       :description => "Profitbricks image name",
       :proc => lambda { |o| Chef::Config[:knife][:profitbricks_image] = o }
 
-    option :node_name,
+    option :chef_node_name,
       :short => "-N NAME",
       :long => "--node-name NAME",
       :description => "The Chef node name for your new server node",
-      :proc => Proc.new { |o| Chef::Config[:knife][:node_name] = o }
+      :proc => Proc.new { |o| Chef::Config[:knife][:chef_node_name] = o }
 
     def run
       compute

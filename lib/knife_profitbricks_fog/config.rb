@@ -3,7 +3,7 @@ module KnifeProfitbricksFog
 
     private
     def _profitbricks_config
-      n = Chef::Config[:knife][:node_name]
+      n = Chef::Config[:knife][:chef_node_name]
       n = "nodes/#{n}.json"
       n = JSON.parse(File.read n)
       config = n['profitbricks']

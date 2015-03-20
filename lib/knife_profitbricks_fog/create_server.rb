@@ -30,10 +30,11 @@ module KnifeProfitbricksFog
     end
 
     def do_create_server(boot_volume)
-      ram = server_config['ram_in_gb'] * 1024
+      ram_in_gb = server_config['ram_in_gb']
+      ram = ram_in_gb * 1024
       cores = server_config['cores']
       
-      log "Create server '#{server_name}': #{ram} GB - #{cores} Cores - Boot volume: #{boot_volume.name}"
+      log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores - Boot volume: #{boot_volume.name}"
       
       server = compute.servers.create(:data_center_id => dc.id, :cores => cores, :ram => ram, 
         :options => {
@@ -51,6 +52,8 @@ module KnifeProfitbricksFog
       server.wait_for { ready? }
       server.reload
       log "Server '#{server_name}' created"
+      log ''
+
       server
     end
 
@@ -66,12 +69,14 @@ module KnifeProfitbricksFog
         server.reload
         volume.reload
         log "Volume #{volume.name} attached"
+        log ''
       end
     end
 
     def create_server
       @server_is_new = true
       log "Create Server #{server_name.inspect}"
+      log ''
       
       volumes = create_volumes
       @server = server = do_create_server volumes.first 

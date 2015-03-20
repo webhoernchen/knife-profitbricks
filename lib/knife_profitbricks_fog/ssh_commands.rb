@@ -24,7 +24,7 @@ module KnifeProfitbricksFog
 
     def check_server_state!
       server.reload
-      log server.machine_state
+#      log server.machine_state
       
       unless server.machine_state == 'RUNNING'
         log "Server is not running. Try start!"
@@ -34,6 +34,7 @@ module KnifeProfitbricksFog
 
       if server.machine_state == 'RUNNING' && server_available_by_ssh?
         log "Server is running."
+        log ''
       else
         error "Can not start server!"
       end
@@ -63,7 +64,7 @@ module KnifeProfitbricksFog
       ## SSH Key
       ssh_key = begin
         file_path = Chef::Config[:knife][:profitbricks_authorized_key] || Dir.glob("#{ENV['HOME']}/.ssh/*.pub").first
-        if File.exits?(file_path)
+        if File.exists?(file_path)
           File.open(file_path).read.gsub(/\n/,'')
         elsif file_path.nil?
           error("Could not read the provided public ssh key, check the authorized_key config.")
@@ -81,8 +82,11 @@ module KnifeProfitbricksFog
       else
         "/root/.ssh"
       end
+
       ssh_root("mkdir -p #{dot_ssh_path} && echo \"#{ssh_key}\" > #{dot_ssh_path}/authorized_keys && chmod -R go-rwx #{dot_ssh_path} && chown -R #{ssh_user} #{dot_ssh_path}").run
+      
       log "Added the ssh key to the authorized_keys of #{ssh_user}"
+      log ''
     end
 
     def ssh_test
@@ -104,6 +108,7 @@ module KnifeProfitbricksFog
       log "Change password for #{user}"
       log "old: #{old_password}"
       log "new: #{password}"
+      log ''
 
       ssh_options = {:paranoid => false}
 
