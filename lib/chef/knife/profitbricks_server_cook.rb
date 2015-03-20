@@ -59,6 +59,9 @@ module KnifeProfitbricksFog
       server
       check_server_state!
       bootstrap_or_cook
+
+      add_server_to_known_hosts__if_new
+      reboot_server__if_new
     end
 
     private
