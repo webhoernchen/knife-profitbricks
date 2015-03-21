@@ -24,7 +24,7 @@ As data bag
 
 ## List all the servers in all data centers
 
-```
+```bash
 knife profitbricks server list
 ```
 
@@ -44,7 +44,7 @@ Example:
 
 ## Server provision (create or update)
 
-```
+```bash
 knife profitbricks server cook -N server_node -image PROFITBRICKS_IMAGE_NAME -u SSH_USER -authorized-key ~/.ssh/id_rsa.pub
 ```
 
@@ -98,7 +98,7 @@ Add the following profitbricks config to your node:
 
 ## Get the ip of a server
 
-```
+```bash
 knife profitbricks server get ip -N server_node
 ```
 
