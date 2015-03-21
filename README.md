@@ -45,7 +45,7 @@ Example:
 ## Server provision (create or update)
 
 ```
-knife profitbricks server cook -N server_node -image PROFITBRICKS_IMAGE_NAME -x SSH_USER
+knife profitbricks server cook -N server_node -image PROFITBRICKS_IMAGE_NAME -u SSH_USER -authorized-key ~/.ssh/id_rsa.pub
 ```
 
 Add the following profitbricks config to your node:
@@ -62,9 +62,36 @@ Add the following profitbricks config to your node:
       "volumes": {
         // Name of the volume and size in GB; Root is the boot volume
         "root": 10, 
-        "application": 10,
-        "mysql": 3
+        "volume_name_2": 10
       }
     }
   }
 ```
+
+ * node
+  * the profitbricks config will be used for create or update the server
+  * the name of the node will be used to provision the server
+ * image
+  * can be a string (/^Ubuntu-14.04-LTS-server-2014-03-02/)
+  * or a regex (/^Ubuntu-14.04-LTS-server-[0-9]{2,4}(-[0-9]{1,2}){1,2}/)
+  * can be set in .chef/knife.rb, too!
+ * ssh-user
+  * can be set in .chef/knife.rb, too!
+ * authorized-key
+  * This public key will be uploaded as authorized_keys to the ssh-user
+  * can be set in .chef/knife.rb, too!
+
+### The following steps will be executed
+
+ * Detect DC by name
+  * or create if not exist
+ * Detect the server by name (inside the DC) 
+  * and updates the server by the given config
+  * and the server will be started if not running
+ * Create the server by the given config if not exist
+  * Set a password for root and ssh-user
+  * Upload the public key as authorized_keys to the ssh-user
+ * Server provisoning by knife solo
+  * with the given ssh-user
+  * and for the given node
+ * Add the ssh-key of the server to known hosts (local) if the server is new

@@ -52,12 +52,6 @@ module KnifeProfitbricksFog
       :description => "The Chef node name for your new server node",
       :proc => Proc.new { |o| Chef::Config[:knife][:chef_node_name] = o }
 
-    option :ssh_user,
-      :short => "-x NAME",
-      :long => "--ssh-user NAME",
-      :description => "The ssh username",
-      :proc => Proc.new { |o| Chef::Config[:knife][:ssh_user] = o }
-
     def run
       compute
       dc
