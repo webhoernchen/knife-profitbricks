@@ -95,3 +95,27 @@ Add the following profitbricks config to your node:
   * with the given ssh-user
   * and for the given node
  * Add the ssh-key of the server to known hosts (local) if the server is new
+
+## Get the ip of a server
+
+```
+knife profitbricks server get ip -N server_node
+```
+
+Returns the ip address of the server for the profitbricks config in the node!
+
+Example:
+
+```
+Establish connection to ProfitBricks for "ACCOUNT"
+Established ...
+
+0.0.0.0
+```
+
+Only the IP address is written to stdout!
+
+```bash
+SERVER_IP=$(knife profitbricks server get ip -N server_node)
+echo $SERVER_IP #0.0.0.0
+```
