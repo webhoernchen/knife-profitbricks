@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = "2.4.5"
   s.summary = "Knife Solo Client for Profitbricks cloud"
   
-  s.add_runtime_dependency "fog-profitbricks"
+  s.add_runtime_dependency "fog-profitbricks", '>= 0.0.2'
   s.add_runtime_dependency "knife-solo"
   s.add_runtime_dependency "knife-solo_data_bag"
 end
