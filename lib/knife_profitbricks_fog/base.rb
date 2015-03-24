@@ -13,7 +13,7 @@ module KnifeProfitbricksFog
         end
 
         option :profitbricks_data_bag,
-          :short => "-account NAME",
+          :short => "-a NAME",
           :long => "--profitbricks-data-bag NAME",
           :description => "Data bag for profitbricks account",
           :proc => lambda { |o| Chef::Config[:knife][:profitbricks_data_bag] = o }

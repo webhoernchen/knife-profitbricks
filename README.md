@@ -18,7 +18,7 @@ As data bag
    ```
 
   * or as parameter
-    * -account account
+    * -a account
   * data bags path
     * data_bags/profitbricks
 
