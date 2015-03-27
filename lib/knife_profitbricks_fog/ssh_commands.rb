@@ -19,7 +19,7 @@ module KnifeProfitbricksFog
     
     private
     def server_available_by_ssh?
-      5.times.detect { ssh_test } 
+      10.times.detect { ssh_test } 
     end
 
     def check_server_state!
@@ -29,7 +29,11 @@ module KnifeProfitbricksFog
       unless server.machine_state == 'RUNNING'
         log "Server is not running. Try start!"
         server.start
+        
         server.wait_for { ready? }
+        server.wait_for { ready? }
+        
+        server.reload
       end
 
       if server.machine_state == 'RUNNING' && server_available_by_ssh?
