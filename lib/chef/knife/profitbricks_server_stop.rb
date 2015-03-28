@@ -15,12 +15,8 @@ module KnifeProfitbricksFog
       require 'net/ssh/multi'
       
       require 'chef/mixin/command'
-      require 'chef/knife'
-      require 'chef/knife/solo_bootstrap'
-      require 'chef/knife/solo_cook'
       require 'chef/json_compat'
       
-      require 'securerandom'
       require 'timeout'
       require 'socket'
     end
