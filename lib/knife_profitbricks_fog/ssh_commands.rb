@@ -63,6 +63,12 @@ module KnifeProfitbricksFog
       s.config[:ssh_password] = root_password
       s
     end
+
+    def ssh_user(command)
+      s = ssh(command)
+      s.config[:ssh_user] = Chef::Config[:knife][:ssh_user]
+      s
+    end
     
     def upload_ssh_key
       ## SSH Key

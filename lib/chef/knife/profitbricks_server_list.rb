@@ -11,7 +11,7 @@ module KnifeProfitbricksFog
         log "DC: #{dc.name}"
 
         servers_for_datacenter(dc).each do |server|
-          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{server.interfaces.first.ips}; #{server.machine_state})"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{server.interfaces.first.ips}; #{server.machine_state}, #{server.state})"
 
 
           volumes_for_server(server).each do |volume|
