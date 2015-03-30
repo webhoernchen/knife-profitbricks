@@ -106,7 +106,7 @@ module KnifeProfitbricksFog
           s.close
           true
         end
-      rescue Timeout::Error, Errno::ECONNREFUSED
+      rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect
         false
       end
     end
@@ -115,6 +115,7 @@ module KnifeProfitbricksFog
       user = options[:user]
       old_password = options[:old_password]
       password = options[:password]
+      
       log "Change password for #{user}"
       log "old: #{old_password}"
       log "new: #{password}"
@@ -132,25 +133,40 @@ module KnifeProfitbricksFog
         command = "passwd #{user}"
       end
 
-      Net::SSH.start( server_ip, login_user, ssh_options) do |ssh|
-        ssh.open_channel do |channel|
-           channel.on_request "exit-status" do |request_channel, data|
-              $exit_status = data.read_long
-           end
-           channel.on_data do |data_channel, data|
-              if data.inspect.include? "current"
-                      data_channel.send_data("#{old_password}\n");
-              elsif data.inspect.include? "New"
-                      data_channel.send_data("#{password}\n");
-              elsif data.inspect.include? "new"
-                      data_channel.send_data("#{password}\n");
-              end
-           end
-           channel.request_pty
-           channel.exec(command);
-           channel.wait
+      begin
+        Net::SSH.start( server_ip, login_user, ssh_options) do |ssh|
+          ssh.open_channel do |channel|
+             channel.on_request "exit-status" do |request_channel, data|
+                $exit_status = data.read_long
+             end
+             channel.on_data do |data_channel, data|
+                if data.inspect.include? "current"
+                  data_channel.send_data("#{old_password}\n");
+                elsif data.inspect.include? "New"
+                  data_channel.send_data("#{password}\n");
+                elsif data.inspect.include? "new"
+                  data_channel.send_data("#{password}\n");
+                else
+                  p data.inspect
+                end
+             end
+             channel.request_pty
+             channel.exec(command);
+             channel.wait
 
-           return $exit_status == 0
+             return $exit_status == 0
+          end
+        end
+      rescue Net::SSH::Disconnect => e
+        @change_password_retry ||= 0
+        @change_password_retry += 1
+        
+        sleep 2
+        
+        if @change_password_retry > 3
+          raise e
+        else
+          retry
         end
       end
     end
