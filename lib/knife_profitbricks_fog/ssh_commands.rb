@@ -146,8 +146,8 @@ module KnifeProfitbricksFog
                   data_channel.send_data("#{password}\n");
                 elsif data.inspect.include? "new"
                   data_channel.send_data("#{password}\n");
-                else
-                  p data.inspect
+#                else
+#                  p data.inspect
                 end
              end
              channel.request_pty
