@@ -24,17 +24,14 @@ module KnifeProfitbricksFog
     end
 
     private
-    def data_centers
-      @data_centers ||= compute.datacenters.all
-    end
-    alias dcs data_centers
-
     def datacenters
-      @datacenters ||= compute.datacenters.all
+      @datacenters ||= compute.datacenters.all.sort_by(&:name)
     end
+    alias dcs datacenters
+    alias data_centers datacenters
 
     def servers
-      @servers ||= compute.servers.all
+      @servers ||= compute.servers.all.sort_by(&:name)
     end
 
     def volumes
