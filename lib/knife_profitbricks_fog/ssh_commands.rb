@@ -157,7 +157,8 @@ module KnifeProfitbricksFog
              return $exit_status == 0
           end
         end
-      rescue Net::SSH::Disconnect => e
+      # network is not stable on new server
+      rescue Exception => e
         @change_password_retry ||= 0
         @change_password_retry += 1
         
