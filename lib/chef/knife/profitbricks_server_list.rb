@@ -11,7 +11,7 @@ module KnifeProfitbricksFog
         log "DC: #{dc.name}"
 
         servers_for_datacenter(dc).each do |server|
-          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{server.interfaces.first.ips}; #{server.machine_state}, #{server.state})"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{ips_for_server(server)}; #{server.machine_state}, #{server.state})"
 
 
           volumes_for_server(server).each do |volume|
@@ -38,6 +38,10 @@ module KnifeProfitbricksFog
       @volumes ||= compute.volumes.all
     end
 
+    def interfaces
+      @interfaces ||= compute.interfaces.all
+    end
+
     def servers_for_dc(dc)
       @servers_by_dc ||= servers.inject({}) do |sum, server|
         sum[server.data_center_id] ||= []
@@ -50,7 +54,7 @@ module KnifeProfitbricksFog
     alias servers_for_datacenter servers_for_dc
 
     def volumes_for_server(server)
-      @volumes_by_dc ||= volumes.inject({}) do |sum, volume|
+      @volumes_by_server ||= volumes.inject({}) do |sum, volume|
         sum[volume.server_ids] ||= []
         sum[volume.server_ids] << volume
         sum
@@ -61,7 +65,21 @@ module KnifeProfitbricksFog
         sum
       end
 
-      @volumes_by_dc[server.id].sort_by {|v| avs__device_numbers[v.id] }
+      @volumes_by_server[server.id].sort_by {|v| avs__device_numbers[v.id] }
+    end
+
+    def interfaces_for_server(server)
+      @interfaces_by_server ||= interfaces.inject({}) do |sum, interface|
+        sum[interface.server_id] ||= []
+        sum[interface.server_id] << interface
+        sum
+      end
+
+      @interfaces_by_server[server.id]
+    end
+
+    def ips_for_server(server)
+      interfaces_for_server(server).collect(&:ips).flatten.collect(&:to_s).join(', ')
     end
   end
 end
