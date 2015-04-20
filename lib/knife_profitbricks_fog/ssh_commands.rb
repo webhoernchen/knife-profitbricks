@@ -19,7 +19,11 @@ module KnifeProfitbricksFog
     
     private
     def server_available_by_ssh?
-      10.times.detect { ssh_test } 
+      10.times.detect do 
+        result = ssh_test
+        sleep(5) unless result
+        result
+      end
     end
 
     def check_server_state!
