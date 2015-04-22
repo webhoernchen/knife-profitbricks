@@ -15,9 +15,12 @@ module KnifeProfitbricksFog
       else
         log "Update LVS settings"
         
-        server.options = self.class::LVS_CONFIG
+        server.options = {:options => self.class::LVS_CONFIG}
         server.update
-        server.wait_for { ready? }
+        server.wait_for do 
+          state == 'AVAILABLE' && machine_state == 'RUNNING' ||
+            state == 'INACTIVE' && machine_state == 'SHUTOFF'
+        end
 
         log "LVS config updated"
       end
@@ -25,7 +28,10 @@ module KnifeProfitbricksFog
       if server.ram != ram || server.cores != cores
         server.options = { :cores => cores, :ram => ram }
         server.update
-        server.wait_for { ready? }
+        server.wait_for do 
+          state == 'AVAILABLE' && machine_state == 'RUNNING' ||
+            state == 'INACTIVE' && machine_state == 'SHUTOFF'
+        end
       end
       
       update_volumes
