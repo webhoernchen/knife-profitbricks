@@ -4,6 +4,15 @@ module KnifeProfitbricksFog
   class ProfitbricksServerList < Chef::Knife
     include KnifeProfitbricksFog::Base
 
+    LVS_ATTRIBUTES = [
+      :cpu_hotplug,
+      :ram_hotplug,
+      :nic_hotplug,
+      :nic_hotunplug,
+      :disc_hotplug,
+      :disc_hotunplug
+    ]
+
     banner "knife profitbricks server list OPTIONS"
 
     def run
@@ -11,12 +20,13 @@ module KnifeProfitbricksFog
         log "DC: #{dc.name}"
 
         servers_for_datacenter(dc).each do |server|
-          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; IP: #{ips_for_server(server)}; #{server.machine_state}, #{server.state})"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; #{server.machine_state}, #{server.state})"
 
-
-          volumes_for_server(server).each do |volume|
-            log "   * Volume: #{volume.name} (#{volume.size} GB)"
-          end
+          log "   * OS: #{server.os_type}"
+          log "   * IP: #{ips_for_server(server)}"
+          
+          volumes_info_for_server server
+          lvs_info_for_server server
           
           log ""
         end
@@ -68,6 +78,14 @@ module KnifeProfitbricksFog
       @volumes_by_server[server.id].sort_by {|v| avs__device_numbers[v.id] }
     end
 
+    def volumes_info_for_server(server)
+      log "   * Volumes:"
+      
+      volumes_for_server(server).each do |volume|
+        log "     * #{volume.name} (#{volume.size} GB)"
+      end
+    end
+
     def interfaces_for_server(server)
       @interfaces_by_server ||= interfaces.inject({}) do |sum, interface|
         sum[interface.server_id] ||= []
@@ -80,6 +98,14 @@ module KnifeProfitbricksFog
 
     def ips_for_server(server)
       interfaces_for_server(server).collect(&:ips).flatten.collect(&:to_s).join(', ')
+    end
+
+    def lvs_info_for_server(server)
+      log "   * LVS:"
+      
+      LVS_ATTRIBUTES.each do |attr|
+        log "     * #{attr}: #{server.send(attr)}"
+      end
     end
   end
 end
