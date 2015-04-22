@@ -1,6 +1,15 @@
 module KnifeProfitbricksFog
   module Base
 
+    LVS_ATTRIBUTES = [
+      :cpu_hotplug,
+      :ram_hotplug,
+      :nic_hotplug,
+      :nic_hotunplug,
+      :disc_hotplug,
+      :disc_hotunplug
+    ]
+
     def self.included(base)
       base.class_eval do 
         deps do 

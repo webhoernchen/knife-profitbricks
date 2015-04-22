@@ -10,12 +10,12 @@ module KnifeProfitbricksFog
       cores = server_config['cores']
 
       log "Check LVS state #{server_name}"
-      if LVS_CONFIG.all? {|attr, value| server.send(attr) }
+      if self.class::LVS_ATTRIBUTES.all? {|attr| server.send(attr).to_s == 'true' }
         log "LVS is available"
       else
         log "Update LVS settings"
         
-        server.options = LVS_CONFIG
+        server.options = self.class::LVS_CONFIG
         server.update
         server.wait_for { ready? }
 

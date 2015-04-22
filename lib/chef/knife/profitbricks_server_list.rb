@@ -4,15 +4,6 @@ module KnifeProfitbricksFog
   class ProfitbricksServerList < Chef::Knife
     include KnifeProfitbricksFog::Base
 
-    LVS_ATTRIBUTES = [
-      :cpu_hotplug,
-      :ram_hotplug,
-      :nic_hotplug,
-      :nic_hotunplug,
-      :disc_hotplug,
-      :disc_hotunplug
-    ]
-
     banner "knife profitbricks server list OPTIONS"
 
     def run
@@ -103,7 +94,7 @@ module KnifeProfitbricksFog
     def lvs_info_for_server(server)
       log "   * LVS:"
       
-      LVS_ATTRIBUTES.each do |attr|
+      self.class::LVS_ATTRIBUTES.each do |attr|
         log "     * #{attr}: #{server.send(attr)}"
       end
     end
