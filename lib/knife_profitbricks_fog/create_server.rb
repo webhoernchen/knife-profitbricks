@@ -41,13 +41,7 @@ module KnifeProfitbricksFog
           :serverName => server_name, 
           :internetAccess => true, 
           :osType => 'LINUX',
-          :bootFromStorageId => boot_volume.id,
-          :cpuHotPlug => true, 
-          :ramHotPlug => true, 
-          :nicHotPlug => true, 
-          :nicHotUnPlug => true, 
-          :discVirtioHotPlug => true, 
-          :discVirtioHotUnPlug => true})
+          :bootFromStorageId => boot_volume.id}.merge(LVS_CONFIG))
       
       server.wait_for { ready? }
       server.reload

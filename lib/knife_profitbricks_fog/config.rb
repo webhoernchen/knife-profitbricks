@@ -1,5 +1,13 @@
 module KnifeProfitbricksFog
   module Config
+    LVS_CONFIG = {
+      :cpuHotPlug => true, 
+      :ramHotPlug => true, 
+      :nicHotPlug => true, 
+      :nicHotUnPlug => true, 
+      :discVirtioHotPlug => true, 
+      :discVirtioHotUnPlug => true
+    }
 
     private
     def _profitbricks_config

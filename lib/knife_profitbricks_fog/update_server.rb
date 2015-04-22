@@ -8,6 +8,19 @@ module KnifeProfitbricksFog
       
       ram = server_config['ram_in_gb'] * 1024
       cores = server_config['cores']
+
+      log "Check LVS state #{server_name}"
+      if LVS_CONFIG.all? {|attr, value| server.send(attr) }
+        log "LVS is available"
+      else
+        log "Update LVS settings"
+        
+        server.options = LVS_CONFIG
+        server.update
+        server.wait_for { ready? }
+
+        log "LVS config updated"
+      end
       
       if server.ram != ram || server.cores != cores
         server.options = { :cores => cores, :ram => ram }
