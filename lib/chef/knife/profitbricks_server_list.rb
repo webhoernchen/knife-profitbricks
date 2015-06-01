@@ -92,10 +92,14 @@ module KnifeProfitbricksFog
     end
 
     def lvs_info_for_server(server)
-      log "   * LVS:"
+      if self.class::LVS_ATTRIBUTES.all? {|attr| server.send(attr) }
+        log "   * LVS: true"
+      else
+        log "   * LVS:"
       
-      self.class::LVS_ATTRIBUTES.each do |attr|
-        log "     * #{attr}: #{server.send(attr)}"
+        self.class::LVS_ATTRIBUTES.each do |attr|
+          log "     * #{attr}: #{server.send(attr)}"
+        end
       end
     end
   end
