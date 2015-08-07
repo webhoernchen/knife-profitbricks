@@ -18,7 +18,7 @@ module KnifeProfitbricksFog
       chef_klass.load_deps
       chef = chef_klass.new
       chef.name_args = [server_ip]
-      chef.config[:run_list] = Chef::Config[:knife][:run_list] if Chef::Config[:knife][:run_list]
+      chef.config[:override_runlist] = Chef::Config[:knife][:override_runlist] if Chef::Config[:knife][:override_runlist]
       chef.config[:ssh_user] = Chef::Config[:knife][:ssh_user]
       chef.config[:host_key_verify] = false
       chef.config[:chef_node_name] = Chef::Config[:knife][:chef_node_name]

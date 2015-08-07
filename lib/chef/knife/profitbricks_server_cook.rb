@@ -37,7 +37,14 @@ module KnifeProfitbricksFog
       :short => "-r RUN_LIST",
       :long => "--run-list RUN_LIST",
       :description => "Comma separated list of roles/recipes to apply",
-      :proc => lambda { |o| Chef::Config[:knife][:run_list] = o.split(/[\s,]+/) },
+      :proc => lambda { |o| Chef::Config[:deprecated_error] = "\n-r or --run-list is deprecated and will be removed soon!\nPlease use -o or --override-runlist"; Chef::Config[:knife][:override_runlist] = o },
+      :default => []
+    
+    option :override_runlist,
+      :short       => '-o RunlistItem,RunlistItem...,',
+      :long        => '--override-runlist',
+      :description => 'Replace current run list with specified items (Comma separated list of roles/recipes)',
+      :proc => lambda { |o| Chef::Config[:knife][:override_runlist] = o },
       :default => []
 
     option :profitbricks_image,
@@ -53,6 +60,8 @@ module KnifeProfitbricksFog
       :proc => Proc.new { |o| Chef::Config[:knife][:chef_node_name] = o }
 
     def run
+      error Chef::Config[:deprecated_error] if Chef::Config[:deprecated_error]
+
       compute
       dc
 
