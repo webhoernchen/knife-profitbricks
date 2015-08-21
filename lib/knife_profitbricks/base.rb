@@ -2,18 +2,18 @@ module KnifeProfitbricks
   module Base
 
     LVS_ATTRIBUTES = [
-      :cpu_hotplug,
-      :ram_hotplug,
-      :nic_hotplug,
-      :nic_hotunplug,
-      :disc_hotplug,
-      :disc_hotunplug
+      :cpuHotPlug,
+      :ramHotPlug,
+      :nicHotPlug,
+      :nicHotUnplug,
+      :discVirtioHotPlug,
+      :discVirtioHotUnplug
     ]
 
     def self.included(base)
       base.class_eval do 
         deps do 
-          require 'fog/profitbricks'
+          require 'profitbricks'
           require 'chef/knife'
           
           Chef::Knife.load_deps
@@ -26,22 +26,35 @@ module KnifeProfitbricks
           :long => "--profitbricks-data-bag NAME",
           :description => "Data bag for profitbricks account",
           :proc => lambda { |o| Chef::Config[:knife][:profitbricks_data_bag] = o }
+
+        def self.method_added(name)
+          if name.to_s == 'run' && !@run_added
+            @run_added = true
+            alias run_without_establish_connection run
+            alias run run_with_establish_connection
+          end
+        end
       end
     end
 
+    def run_with_establish_connection
+      establish_connection
+      run_without_establish_connection
+    end
+
     private
-    def compute
-      if @compute
-        @compute
-      else
-        user, password = detect_user_and_password
-        log "Establish connection to ProfitBricks for #{user.inspect}"
-        @compute = Fog::Compute.new({:provider => 'ProfitBricks', 
-          :profitbricks_username => user, :profitbricks_password => password})
-        log "Established ..."
-        log "\n"
-        @compute
+    def establish_connection
+      user, password = detect_user_and_password
+      log "Establish connection to ProfitBricks for #{user.inspect}"
+      
+      ProfitBricks.configure do |config|
+        config.username = user
+        config.password = password
+        config.global_classes = false
       end
+      
+      log "Established ..."
+      log "\n"
     end
 
     def load_data_bag(*args)
