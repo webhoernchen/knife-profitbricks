@@ -3,12 +3,12 @@ require 'knife_profitbricks_fog/config'
 require 'knife_profitbricks_fog/data_center'
 require 'knife_profitbricks_fog/ssh_commands'
 
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   class ProfitbricksServerStop < Chef::Knife
-    include KnifeProfitbricksFog::Base
-    include KnifeProfitbricksFog::Config
-    include KnifeProfitbricksFog::DataCenter
-    include KnifeProfitbricksFog::SshCommands
+    include KnifeProfitbricks::Base
+    include KnifeProfitbricks::Config
+    include KnifeProfitbricks::DataCenter
+    include KnifeProfitbricks::SshCommands
     
     deps do
       require 'net/ssh'

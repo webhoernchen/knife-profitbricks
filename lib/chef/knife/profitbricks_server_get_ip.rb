@@ -2,11 +2,11 @@ require 'knife_profitbricks_fog/base'
 require 'knife_profitbricks_fog/config'
 require 'knife_profitbricks_fog/data_center'
 
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   class ProfitbricksServerGetIp < Chef::Knife
-    include KnifeProfitbricksFog::Base
-    include KnifeProfitbricksFog::Config
-    include KnifeProfitbricksFog::DataCenter
+    include KnifeProfitbricks::Base
+    include KnifeProfitbricks::Config
+    include KnifeProfitbricks::DataCenter
     
     deps do
       require 'chef/json_compat'

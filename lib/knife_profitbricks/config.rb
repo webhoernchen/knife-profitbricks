@@ -1,4 +1,4 @@
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   module Config
     LVS_CONFIG = {
       :cpuHotPlug => true, 

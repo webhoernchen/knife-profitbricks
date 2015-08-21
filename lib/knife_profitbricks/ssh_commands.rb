@@ -1,4 +1,4 @@
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   module SshCommands
     
     def self.included(base)

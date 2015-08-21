@@ -1,4 +1,4 @@
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   module Base
 
     LVS_ATTRIBUTES = [

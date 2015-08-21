@@ -1,8 +1,8 @@
 require 'knife_profitbricks_fog/base'
 
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   class ProfitbricksServerList < Chef::Knife
-    include KnifeProfitbricksFog::Base
+    include KnifeProfitbricks::Base
 
     banner "knife profitbricks server list OPTIONS"
 

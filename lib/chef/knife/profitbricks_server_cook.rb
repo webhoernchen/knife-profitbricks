@@ -6,15 +6,15 @@ require 'knife_profitbricks_fog/create_server'
 require 'knife_profitbricks_fog/update_server'
 require 'knife_profitbricks_fog/provision'
 
-module KnifeProfitbricksFog
+module KnifeProfitbricks
   class ProfitbricksServerCook < Chef::Knife
-    include KnifeProfitbricksFog::Base
-    include KnifeProfitbricksFog::Config
-    include KnifeProfitbricksFog::DataCenter
-    include KnifeProfitbricksFog::SshCommands
-    include KnifeProfitbricksFog::CreateServer
-    include KnifeProfitbricksFog::UpdateServer
-    include KnifeProfitbricksFog::Provision
+    include KnifeProfitbricks::Base
+    include KnifeProfitbricks::Config
+    include KnifeProfitbricks::DataCenter
+    include KnifeProfitbricks::SshCommands
+    include KnifeProfitbricks::CreateServer
+    include KnifeProfitbricks::UpdateServer
+    include KnifeProfitbricks::Provision
       
     deps do
       require 'net/ssh'
