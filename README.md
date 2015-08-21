@@ -1,4 +1,4 @@
-# knife-profitbricks-fog
+# knife-profitbricks
 Manage the server node at profitbricks with knife solo
 
 ### Specify your account data
