@@ -1,10 +1,10 @@
-require 'knife_profitbricks_fog/base'
-require 'knife_profitbricks_fog/config'
-require 'knife_profitbricks_fog/data_center'
-require 'knife_profitbricks_fog/ssh_commands'
-require 'knife_profitbricks_fog/create_server'
-require 'knife_profitbricks_fog/update_server'
-require 'knife_profitbricks_fog/provision'
+require 'knife_profitbricks/base'
+require 'knife_profitbricks/config'
+require 'knife_profitbricks/data_center'
+require 'knife_profitbricks/ssh_commands'
+require 'knife_profitbricks/create_server'
+require 'knife_profitbricks/update_server'
+require 'knife_profitbricks/provision'
 
 module KnifeProfitbricks
   class ProfitbricksServerCook < Chef::Knife

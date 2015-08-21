@@ -1,4 +1,4 @@
-require 'knife_profitbricks_fog/base'
+require 'knife_profitbricks/base'
 
 module KnifeProfitbricks
   class ProfitbricksServerList < Chef::Knife
