@@ -22,20 +22,18 @@ module KnifeProfitbricks
 
 
     def run
-      compute
-      dc = compute.datacenters.all.find { |d| d.name == dc_name }
+      dc = ProfitBricks::Datacenter.list.find { |d| d.name == dc_name }
 
       unless dc
         error "Datacenter #{dc_name.inspect} not exist"
       end
 
-      server = compute.servers.all.detect do |s|
-        s.data_center_id == dc.id && s.name == server_name
+      server = dc.servers.detect do |s|
+        s.name == server_name
       end
 
       if server
-        ip = server && server.interfaces.first.ips
-        print ip
+        print server.ips.first
       else
         error "Server '#{server_name}' not found in data_center '#{dc_name}'"
       end
