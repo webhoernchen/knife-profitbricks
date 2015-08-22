@@ -7,29 +7,16 @@ module KnifeProfitbricks
     banner "knife profitbricks server list OPTIONS"
 
     def run
-      ProfitBricks::Datacenter.list.sort_by do |dc|
-        dc.properties['name']
-      end.each do |dc|
-        log "DC: #{dc.properties['name']}"
+      ProfitBricks::Datacenter.list_sorted.each do |dc|
+        log "DC: #{dc.name}"
 
         dc.servers.each do |server|
-          name = server.properties['name']
-          cores = server.properties['cores']
-          ram = server.properties['ram']
-          vm_state = server.properties['vmState']
-
-          log " * Server: #{name} (#{cores} cores; #{ram} MB RAM; #{vm_state})"
-          
-          if boot_volume_attrs = server.properties['bootVolume']
-            boot_volume = server.get_volume(boot_volume_attrs['id'])
-            licence_type = boot_volume.properties['licenceType']
-            log "   * OS: #{licence_type}"
-          end
-
-          log "   * IP: #{ips_for_server(server)}"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; #{server.vm_state})"
+          log "   * OS: #{server.licence_type}"
+          log "   * IP: #{server.ips.join(',')}"
           
           volumes_info_for_server server
-          lvs_info_for_server boot_volume if boot_volume_attrs
+          lvs_info_for_server server if server.boot_volume
           
           log ""
         end
@@ -40,28 +27,19 @@ module KnifeProfitbricks
     def volumes_info_for_server(server)
       log "   * Volumes:"
       
-      server.list_volumes.each do |volume|
-        name = volume.properties['name']
-        size = volume.properties['size']
-
-        log "     * #{name} (#{size} GB)"
+      server.volumes.each do |volume|
+        log "     * #{volume.name} (#{volume.size} GB)"
       end
     end
 
-    def ips_for_server(server)
-      server.nics.collect do |nic|
-        nic.properties['ips']
-      end.flatten.join(', ')
-    end
-
-    def lvs_info_for_server(boot_volume)
-      if self.class::LVS_ATTRIBUTES.all? {|attr| boot_volume.properties[attr.to_s] }
-        log "   * LVS: true"
+    def lvs_info_for_server(server)
+      if false #server.lvs_support_complete?
+        log "   * LVS: complete"
       else
         log "   * LVS:"
       
-        self.class::LVS_ATTRIBUTES.each do |attr|
-          log "     * #{attr}: #{boot_volume.properties[attr.to_s]}"
+        server.lvs_support.each do |k, v|
+          log "     * #{k}: #{v}"
         end
       end
     end

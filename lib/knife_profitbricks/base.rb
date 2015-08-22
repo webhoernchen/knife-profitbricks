@@ -15,6 +15,11 @@ module KnifeProfitbricks
         deps do 
           require 'profitbricks'
           require 'chef/knife'
+          require 'knife_profitbricks/extension/profitbricks/model'
+          require 'knife_profitbricks/extension/profitbricks/server'
+          require 'knife_profitbricks/extension/profitbricks/datacenter'
+          require 'knife_profitbricks/extension/profitbricks/volume'
+          require 'knife_profitbricks/extension/profitbricks/nic'
           
           Chef::Knife.load_deps
           
