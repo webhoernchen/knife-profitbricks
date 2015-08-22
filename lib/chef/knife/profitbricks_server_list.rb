@@ -33,7 +33,7 @@ module KnifeProfitbricks
     end
 
     def lvs_info_for_server(server)
-      if false #server.lvs_support_complete?
+      if server.lvs_support_complete?
         log "   * LVS: complete"
       else
         log "   * LVS:"
