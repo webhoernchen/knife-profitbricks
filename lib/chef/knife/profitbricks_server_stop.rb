@@ -46,45 +46,43 @@ module KnifeProfitbricks
     end
 
     def find_server
-      compute
-      dc = compute.datacenters.all.find { |d| d.name == dc_name }
+      dc = ProfitBricks::Datacenter.find_by_name(dc_name)
 
       unless dc
         error "Datacenter #{dc_name.inspect} not exist"
       end
 
-      compute.servers.all.detect do |s|
-        s.data_center_id == dc.id && s.name == server_name
-      end
+      dc.server_by_name(server_name)
     end
 
     def shutdown_server
-      if server.machine_state == 'RUNNING'
+      if server.running?
         log "Server is running."
         log 'Shutdown server'
 
         ssh('sudo shutdown -h now').run
 
-        server.wait_for { machine_state == 'SHUTOFF' }
+        server.wait_for { ready? }
+        server.wait_for { paused? }
         
         log ''
         log 'Server is down'
         
         server.reload
       else
-        server.wait_for { machine_state == 'SHUTOFF' }
+        server.wait_for { paused? }
         server.reload
         log 'Server is down'
       end
     end
 
     def stop_server
-      if server.state == 'AVAILABLE'
+      if server.pausd?
         log "Server hardware is running."
         log 'Stop server'
         
         server.stop
-        server.wait_for { state == 'INACTIVE' }
+        server.wait_for { shutoff? }
         
         log ''
         log 'Server is inactive'

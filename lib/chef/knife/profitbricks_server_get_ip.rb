@@ -22,7 +22,7 @@ module KnifeProfitbricks
 
 
     def run
-      dc = ProfitBricks::DataCenter.find_by_name(dc_name)
+      dc = ProfitBricks::Datacenter.find_by_name(dc_name)
 
       unless dc
         error "Datacenter #{dc_name.inspect} not exist"

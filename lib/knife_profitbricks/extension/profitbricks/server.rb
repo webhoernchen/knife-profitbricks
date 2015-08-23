@@ -52,6 +52,18 @@ module KnifeProfitbricks
           @boot_volume = nil
           reload_without_reset_cache
         end
+
+        def paused?
+          vm_state == 'PAUSED'
+        end
+
+        def run?
+          vm_state == 'RUNNING'
+        end
+
+        def shutoff?
+          vm_state == 'SHUTOF'
+        end
       end
     end
   end
