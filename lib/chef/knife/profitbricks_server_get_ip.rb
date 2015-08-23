@@ -22,15 +22,14 @@ module KnifeProfitbricks
 
 
     def run
-      dc = ProfitBricks::Datacenter.list.find { |d| d.name == dc_name }
+      dc = ProfitBricks::DataCenter.find_by_name(dc_name)
 
       unless dc
         error "Datacenter #{dc_name.inspect} not exist"
       end
 
-      server = dc.servers.detect do |s|
-        s.name == server_name
-      end
+      server = dc.server_by_name(server_name)
+ 
 
       if server
         print server.ips.first

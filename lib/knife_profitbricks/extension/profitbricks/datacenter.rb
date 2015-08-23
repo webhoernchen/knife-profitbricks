@@ -9,6 +9,16 @@ module KnifeProfitbricks
             def self.list_sorted
               list.sort_by(&:name)
             end
+
+            def self.find_by_name(name)
+              list.find { |d| d.name == name }
+            end
+          end
+        end
+
+        def server_by_name(server_name)
+          servers.detect do |server|
+            server.name == server_name
           end
         end
       end
