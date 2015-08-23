@@ -62,7 +62,6 @@ module KnifeProfitbricks
     def run
       error Chef::Config[:deprecated_error] if Chef::Config[:deprecated_error]
 
-      compute
       dc
 
       server

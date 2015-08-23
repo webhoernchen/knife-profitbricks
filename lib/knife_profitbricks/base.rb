@@ -20,6 +20,8 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/datacenter'
           require 'knife_profitbricks/extension/profitbricks/volume'
           require 'knife_profitbricks/extension/profitbricks/nic'
+          require 'knife_profitbricks/extension/profitbricks/location'
+          require 'knife_profitbricks/extension/profitbricks/image'
           
           Chef::Knife.load_deps
           

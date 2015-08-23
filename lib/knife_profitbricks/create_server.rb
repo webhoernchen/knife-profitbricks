@@ -10,7 +10,7 @@ module KnifeProfitbricks
       server_config['volumes'].collect do |hd_name, size_in_gb|
         name = "#{server_name}_#{hd_name}"
         log "Create Volume '#{name}' size: #{size_in_gb} GB"
-        options = { :storageName => name }
+        options = { :name => name }
         
         if hd_name == 'root'
           log "Based on #{boot_image.name}"
