@@ -42,7 +42,7 @@ module KnifeProfitbricks
     end
 
     def boot_image
-      @image ||= ProfitBricks::Image.all.find do |i|
+      @image ||= ProfitBricks::Image.list.find do |i|
         i.location == dc_region &&
           (boot_image_name.is_a?(Regexp) && i.name.match(boot_image_name) ||
           i.name == boot_image_name)

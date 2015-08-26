@@ -10,16 +10,15 @@ module KnifeProfitbricks
       server_config['volumes'].collect do |hd_name, size_in_gb|
         name = "#{server_name}_#{hd_name}"
         log "Create Volume '#{name}' size: #{size_in_gb} GB"
-        options = { :name => name }
+        options = { :name => name, :size => size_in_gb }
         
         if hd_name == 'root'
           log "Based on #{boot_image.name}"
           options[:image] = boot_image.id 
           options[:imagePassword] = root_password if boot_image.public
+        else
+          options[:licenceType] = 'OTHER' 
         end
-
-        options[:licenceType] = 'LINUX'
-        options[:size] = size_in_gb
 
         volume = dc.create_volume(options)
         
@@ -40,8 +39,9 @@ module KnifeProfitbricks
       
       server = dc.create_server(:cores => cores, :ram => ram, 
           :name => server_name, 
-          :osType => 'LINUX',
-          :bootVolume => boot_volume.id)
+          :bootVolume => boot_volume.id,
+          :bootCdrom => nil,
+          :volumes => [boot_volume.id])
       
       server.wait_for { ready? }
       server.reload

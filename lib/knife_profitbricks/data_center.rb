@@ -18,7 +18,7 @@ module KnifeProfitbricks
 
       log "Locating Datacenter #{dc_name.inspect}"
       
-      dc = ProfitBricks::DataCenter.find_by_name dc_name
+      dc = ProfitBricks::Datacenter.find_by_name dc_name
      
       if dc
         log "Datacenter #{dc_name.inspect} exist"

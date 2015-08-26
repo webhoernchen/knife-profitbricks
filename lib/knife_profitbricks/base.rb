@@ -58,6 +58,7 @@ module KnifeProfitbricks
         config.username = user
         config.password = password
         config.global_classes = false
+        config.timeout = 120
       end
       
       log "Established ..."
