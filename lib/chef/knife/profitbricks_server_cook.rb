@@ -70,7 +70,7 @@ module KnifeProfitbricks
       bootstrap_or_cook
 
 #      reboot_server__if_new
-    end
+    endspecified
 
     private
       

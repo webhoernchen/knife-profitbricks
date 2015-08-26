@@ -33,7 +33,7 @@ module KnifeProfitbricks
         end
 
         def list_volumes_with_order
-          list_volumes_without_order.sort_by(&:device_number)
+          @ordered_volumes ||= list_volumes_without_order.sort_by(&:device_number)
         end
 
         def boot_volume
@@ -50,6 +50,7 @@ module KnifeProfitbricks
 
         def reload_with_reset_cache
           @boot_volume = nil
+          @ordered_volumes = nil
           reload_without_reset_cache
         end
 
@@ -62,7 +63,7 @@ module KnifeProfitbricks
         end
 
         def shutoff?
-          vm_state == 'SHUTOF'
+          vm_state == 'SHUTOFF'
         end
       end
     end

@@ -4,7 +4,7 @@ module KnifeProfitbricks
       module Image
         def self.included(base)
           base.class_eval do
-            property_reader :name
+            property_reader :name, :location
           end
         end
       end

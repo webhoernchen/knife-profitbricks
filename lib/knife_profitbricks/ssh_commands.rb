@@ -28,9 +28,9 @@ module KnifeProfitbricks
 
     def check_server_state!
       server.reload
-#      log server.machine_state
+#      log server.vm_state
       
-      unless server.machine_state == 'RUNNING'
+      unless server.run?
         log "Server is not running. Try start!"
         server.start
         
@@ -40,7 +40,7 @@ module KnifeProfitbricks
         server.reload
       end
 
-      if server.machine_state == 'RUNNING' && server_available_by_ssh?
+      if server.run? && server_available_by_ssh?
         log "Server is running."
         log ''
       else

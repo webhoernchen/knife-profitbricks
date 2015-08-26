@@ -14,14 +14,16 @@ module KnifeProfitbricks
         
         if hd_name == 'root'
           log "Based on #{boot_image.name}"
-          options[:mountImageId] = boot_image.id 
-          options[:profitBricksImagePassword] = root_password if boot_image.public
+          options[:image] = boot_image.id 
+          options[:imagePassword] = root_password if boot_image.public
         end
 
-        volume = compute.volumes.create(:data_center_id => dc.id, :size => size_in_gb, :options => options)
+        options[:licenceType] = 'LINUX'
+        options[:size] = size_in_gb
+
+        volume = dc.create_volume(options)
         
         volume.wait_for { ready? }
-        volume.reload
         log "Volume '#{name}' created"
         log ''
 
@@ -36,12 +38,10 @@ module KnifeProfitbricks
       
       log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores - Boot volume: #{boot_volume.name}"
       
-      server = compute.servers.create(:data_center_id => dc.id, :cores => cores, :ram => ram, 
-        :options => {
-          :serverName => server_name, 
-          :internetAccess => true, 
+      server = dc.create_server(:cores => cores, :ram => ram, 
+          :name => server_name, 
           :osType => 'LINUX',
-          :bootFromStorageId => boot_volume.id}.merge(self.class::LVS_CONFIG))
+          :bootVolume => boot_volume.id)
       
       server.wait_for { ready? }
       server.reload
@@ -52,19 +52,17 @@ module KnifeProfitbricks
     end
 
     def attach_volumes_to_server(volumes)
-      current_device_number = server.attached_volumes.collect {|v| v['device_number'] }.max
-
-      volumes.each_with_index do |volume, index|
-        log "Attach volume #{volume.name} to server #{server.name} at device number #{current_device_number + index.next}"
-        volume.attach(server.id, :device_number => current_device_number + index.next)
+      volumes.each do |volume|
+        log "Attach volume #{volume.name} to server #{server.name}"
+        volume.attach(server.id)
 
         server.wait_for { ready? }
         volume.wait_for { ready? }
-        server.reload
-        volume.reload
-        log "Volume #{volume.name} attached"
+        log "Volume #{volume.name} attached at device_number #{volume.device_number}"
         log ''
       end
+      
+      server.reload
     end
 
     def create_server
