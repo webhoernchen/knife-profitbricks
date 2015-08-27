@@ -36,14 +36,19 @@ module KnifeProfitbricks
       cores = server_config['cores']
       
       log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores - Boot volume: #{boot_volume.name}"
+      public_lan = dc.lans.detect(&:public?) || dc.create_lan(:public => true)
+      public_lan.wait_for { ready? }
       
       server = dc.create_server(:cores => cores, :ram => ram, 
           :name => server_name, 
-          :bootVolume => boot_volume.id,
-          :bootCdrom => nil,
-          :volumes => [boot_volume.id])
+          :bootVolume => {:id => boot_volume.id, :type => 'volume'},
+          :bootCdrom => nil)
       
       server.wait_for { ready? }
+      
+      nic = server.create_nic :firewallActive => false, :lan => public_lan.id
+      nic.wait_for { ready? }
+
       server.reload
       log "Server '#{server_name}' created"
       log ''

@@ -34,7 +34,7 @@ module KnifeProfitbricks
     end
 
     def server_ip
-      server && server.interfaces.first.ips
+      server && server.ips.first
     end
 
     def boot_image_name
