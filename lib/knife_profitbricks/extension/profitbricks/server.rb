@@ -54,16 +54,26 @@ module KnifeProfitbricks
           reload_without_reset_cache
         end
 
-        def paused?
-          vm_state == 'PAUSED'
-        end
-
         def run?
           vm_state == 'RUNNING'
         end
+        alias running? run?
 
         def shutoff?
           vm_state == 'SHUTOFF'
+        end
+
+        def available?
+          state == 'AVAILABLE'
+        end
+
+        def inactive?
+          state == 'INACTIVE'
+        end
+
+        private
+        def state
+          metadata['state']
         end
       end
     end

@@ -61,8 +61,10 @@ module KnifeProfitbricks
         log "Attach volume #{volume.name} to server #{server.name}"
         volume.attach(server.id)
 
-        server.wait_for { ready? }
         volume.wait_for { ready? }
+        server.wait_for { ready? }
+        volume.wait_for { volume.reload; !device_number.nil? }
+        
         log "Volume #{volume.name} attached at device_number #{volume.device_number}"
         log ''
       end
@@ -76,8 +78,9 @@ module KnifeProfitbricks
       log ''
       
       volumes = create_volumes
-      @server = server = do_create_server volumes.first 
-      attach_volumes_to_server volumes[1..-1]
+      boot_volume = volumes.detect {|v| v.name.end_with? 'root' }
+      @server = server = do_create_server boot_volume
+      attach_volumes_to_server volumes - [boot_volume]
 
       check_server_state!
 
