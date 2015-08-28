@@ -61,34 +61,29 @@ module KnifeProfitbricks
         log 'Shutdown server'
 
         ssh('sudo shutdown -h now').run
-
-        server.wait_for { ready? }
-        server.wait_for { paused? }
+        
+        ProfitBricks.wait_for { server.reload; server.shutoff? }
         
         log ''
         log 'Server is down'
-        
-        server.reload
       else
-        server.wait_for { paused? }
-        server.reload
+        ProfitBricks.wait_for { server.reload; server.shutoff? }
         log 'Server is down'
       end
     end
 
     def stop_server
-      if server.pausd?
+      if server.available?
         log "Server hardware is running."
         log 'Stop server'
         
         server.stop
-        server.wait_for { shutoff? }
+        ProfitBricks.wait_for { server.reload; server.inactive? }
         
         log ''
         log 'Server is inactive'
-        
-        server.reload
       else
+        ProfitBricks.wait_for { server.reload; server.inactive? }
         log 'Server is inactive'
       end
     end
