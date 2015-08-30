@@ -35,9 +35,7 @@ module KnifeProfitbricks
         server.start
         
         server.wait_for { ready? }
-        server.wait_for { ready? }
-        
-        server.reload
+        server.wait_for { reload; run? }
       end
 
       if server.run? && server_available_by_ssh?
