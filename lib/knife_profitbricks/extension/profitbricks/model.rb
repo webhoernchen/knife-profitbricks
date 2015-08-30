@@ -6,6 +6,11 @@ module KnifeProfitbricks
 
           def self.extended(base)
             base.send :include, InstanceMethods
+
+            base.class_eval do 
+              alias ready_without_request_id_not_exit? ready?
+              alias ready? ready_with_request_id_not_exit?
+            end
           end
 
           private
@@ -30,6 +35,14 @@ module KnifeProfitbricks
         end
 
         module InstanceMethods
+          def ready_with_request_id_not_exit?
+            if requestId
+              ready_without_request_id_not_exit?
+            else
+              true
+            end
+          end
+
           private
           def read_property(name)
             if properties.keys.collect(&:to_s).include?(name.to_s)
