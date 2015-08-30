@@ -62,12 +62,12 @@ module KnifeProfitbricks
 
         ssh('sudo shutdown -h now').run
         
-        ProfitBricks.wait_for { server.reload; server.shutoff? }
+        server.wait_for { reload; shutoff? }
         
         log ''
         log 'Server is down'
       else
-        ProfitBricks.wait_for { server.reload; server.shutoff? }
+        server.wait_for { reload; shutoff? }
         log 'Server is down'
       end
     end
@@ -78,12 +78,12 @@ module KnifeProfitbricks
         log 'Stop server'
         
         server.stop
-        ProfitBricks.wait_for { server.reload; server.inactive? }
+        server.wait_for { reload; inactive? }
         
         log ''
         log 'Server is inactive'
       else
-        ProfitBricks.wait_for { server.reload; server.inactive? }
+        server.wait_for { reload; inactive? }
         log 'Server is inactive'
       end
     end
