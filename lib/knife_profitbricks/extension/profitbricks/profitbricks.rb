@@ -10,12 +10,12 @@ module KnifeProfitbricks
           end
         end
 
-        def request_with_set_request_id_to_model(*args)
-          caller_binding = binding.eval('self') # get object which called this method
-          response = request_without_set_request_id_to_model(*args)
-          
-          if caller_binding.respond_to? :requestId
-            caller_binding.requestId = (response[:requestId] || response['requestId'])
+        def request_with_set_request_id_to_model(options)
+          response = request_without_set_request_id_to_model(options)
+          request_id = (response[:requestId] || response['requestId'])
+         
+          if options[:method].to_sym != :get && request_id
+            ProfitBricks::Request.get(request_id).set_request_id_to_targets
           end
 
           response

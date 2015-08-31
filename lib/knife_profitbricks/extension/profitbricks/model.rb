@@ -45,6 +45,10 @@ module KnifeProfitbricks
             end
           end
 
+          def model_type
+            @type
+          end
+
           private
           def read_property(name)
             if properties.keys.collect(&:to_s).include?(name.to_s)

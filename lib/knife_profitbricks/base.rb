@@ -24,6 +24,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/location'
           require 'knife_profitbricks/extension/profitbricks/image'
           require 'knife_profitbricks/extension/profitbricks/lan'
+          require 'knife_profitbricks/extension/profitbricks/request'
           
           Chef::Knife.load_deps
           
