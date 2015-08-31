@@ -66,12 +66,17 @@ module KnifeProfitbricks
         def available?
           state == 'AVAILABLE'
         end
+        alias allocated? available?
 
         def inactive?
           state == 'INACTIVE'
         end
+        alias deallocated? inactive?
 
-        private
+        def allocation_state
+          allocated? ? 'Allocated' : 'Deallocated'
+        end
+
         def state
           metadata['state']
         end

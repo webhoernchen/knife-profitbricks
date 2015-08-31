@@ -11,7 +11,9 @@ module KnifeProfitbricks
         log "DC: #{dc.name}"
 
         dc.servers.each do |server|
-          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM; #{server.vm_state})"
+          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM)"
+          log "   * Allocation state: #{server.allocation_state}"
+          log "   * State: #{server.vm_state}"
           log "   * OS: #{server.licence_type}"
           log "   * IP: #{server.ips.join(',')}"
           
