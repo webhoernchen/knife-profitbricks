@@ -78,11 +78,13 @@ module KnifeProfitbricks
         log 'Stop server'
         
         server.stop
+        server.wait_for { ready? }
         server.wait_for { reload; inactive? }
         
         log ''
         log 'Server is inactive'
       else
+        server.wait_for { ready? }
         server.wait_for { reload; inactive? }
         log 'Server is inactive'
       end

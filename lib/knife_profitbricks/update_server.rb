@@ -18,14 +18,14 @@ module KnifeProfitbricks
         boot_volume = server.boot_volume
         boot_volume.update self.class::LVS_CONFIG
         boot_volume.wait_for { ready? }
-#        boot_volume.reload
+        boot_volume.reload
 
         log "LVS config updated"
       end
       
       if server.ram != ram || server.cores != cores
         server.update :cores => cores, :ram => ram
-        boot_volume.wait_for { ready? }
+        server.wait_for { ready? }
       end
       
       update_volumes
