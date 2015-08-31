@@ -6,11 +6,6 @@ module KnifeProfitbricks
 
           def self.extended(base)
             base.send :include, InstanceMethods
-
-            base.class_eval do 
-              alias ready_without_request_id_not_exit? ready?
-              alias ready? ready_with_request_id_not_exit?
-            end
           end
 
           private
@@ -35,6 +30,13 @@ module KnifeProfitbricks
         end
 
         module InstanceMethods
+          def self.included(base)
+            base.class_eval do 
+              alias ready_without_request_id_not_exit? ready?
+              alias ready? ready_with_request_id_not_exit?
+            end
+          end
+
           def ready_with_request_id_not_exit?
             if requestId
               ready_without_request_id_not_exit?
