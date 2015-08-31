@@ -41,7 +41,7 @@ module KnifeProfitbricks
       
       server = dc.create_server(:cores => cores, :ram => ram, 
           :name => server_name, 
-          :bootVolume => {:id => boot_volume.id, :type => 'volume'},
+          :bootVolume => {:id => boot_volume.id, :type => 'volume', :href => boot_volume.href},
           :bootCdrom => nil)
       
       server.wait_for { ready? }
@@ -50,6 +50,8 @@ module KnifeProfitbricks
       nic.wait_for { ready? }
 
       server.reload
+      boot_volume.reload
+
       log "Server '#{server_name}' created"
       log ''
 
@@ -62,7 +64,6 @@ module KnifeProfitbricks
         volume.attach(server.id)
 
         volume.wait_for { ready? }
-        server.wait_for { ready? }
         volume.wait_for { volume.reload; !device_number.nil? }
         
         log "Volume #{volume.name} attached at device_number #{volume.device_number}"

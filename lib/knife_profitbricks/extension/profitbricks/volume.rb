@@ -6,7 +6,7 @@ module KnifeProfitbricks
 
         def self.included(base)
           base.class_eval do
-            property_reader :licenceType, :name, :size, :deviceNumber
+            property_reader :licenceType, :name, :size, :deviceNumber, :href
 #            property_reader LVS_ATTRIBUTES
           end
         end
