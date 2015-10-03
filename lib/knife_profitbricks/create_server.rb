@@ -3,31 +3,46 @@ module KnifeProfitbricks
 
     private
     def create_volumes
-      unless server_config['volumes']
+      unless configured_volumes = server_config['volumes']
         error("No volumes specified! Please specify \"profitbricks\": {\"server\": \"volumes\": {\"root\": SIZE_IN_GB}} in your node!")
       end
 
-      server_config['volumes'].collect do |hd_name, size_in_gb|
-        name = "#{server_name}_#{hd_name}"
-        log "Create Volume '#{name}' size: #{size_in_gb} GB"
-        options = { :name => name, :size => size_in_gb }
-        
-        if hd_name == 'root'
-          log "Based on #{boot_image.name}"
-          options[:image] = boot_image.id 
-          options[:imagePassword] = root_password if boot_image.public
-        else
-          options[:licenceType] = 'OTHER' 
-        end
-
-        volume = dc.create_volume(options)
-        
-        volume.wait_for { ready? }
-        log "Volume '#{name}' created"
-        log ''
-
-        volume
+      threads = configured_volumes.collect do |hd_name, size_in_gb|
+        _thread_for_create_volume hd_name, size_in_gb
       end
+
+      threads.each(&:join)
+      threads.collect(&:value)
+    end
+
+    def _thread_for_create_volume(hd_name, size_in_gb)
+      Thread.new do
+        _create_volume hd_name, size_in_gb
+      end
+    end
+
+    def _create_volume(hd_name, size_in_gb)
+      name = "#{server_name}_#{hd_name}"
+      log_message = "Create Volume '#{name}' size: #{size_in_gb} GB"
+      options = { :name => name, :size => size_in_gb }
+      
+      if hd_name == 'root'
+        log_message = "#{log_message}\nBased on #{boot_image.name}"
+        options[:image] = boot_image.id 
+        options[:imagePassword] = root_password if boot_image.public
+      else
+        options[:licenceType] = 'OTHER' 
+      end
+
+      volume = dc.create_volume(options)
+      
+      volume.wait_for { ready? }
+      log "#{log_message}\nVolume '#{name}' created\n\n"
+
+      volume
+    rescue => e
+      log "#{log_message}: Error\n\n"
+      raise e
     end
 
     def do_create_server(boot_volume)
