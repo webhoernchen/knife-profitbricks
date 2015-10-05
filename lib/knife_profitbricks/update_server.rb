@@ -32,22 +32,40 @@ module KnifeProfitbricks
     end
 
     def update_volumes
-      server_config['volumes'].each do |hd_name, size_in_gb|
-        name = "#{server_name}_#{hd_name}"
-        log "Update Volume '#{name}' size: #{size_in_gb} GB"
-        volume = server.volumes.find do |v|
-          v.name == name
-        end
-       
-        if volume.size > size_in_gb
-          error "The size of the Volume can only be increased and not decreased! Volume: #{name} - old size #{volume.size} GB - new size #{size_in_gb} GB" 
-        elsif volume.size != size_in_gb
-          volume.update :size => size_in_gb
-          volume.wait_for { ready? }
-        end
+      threads = server_config['volumes'].collect do |hd_name, size_in_gb|
+        _thread_for_update_volume hd_name, size_in_gb
       end
 
+      threads.each(&:join)
       server.reload
+    end
+
+    def _thread_for_update_volume(hd_name, size_in_gb)
+      Thread.new do
+        _update_volume hd_name, size_in_gb
+      end
+    end
+
+    def _update_volume(hd_name, size_in_gb)
+      name = "#{server_name}_#{hd_name}"
+      log_message =  "Update Volume '#{name}' size: #{size_in_gb} GB"
+      
+      volume = server.volumes.find do |v|
+        v.name == name
+      end
+     
+      if volume.size > size_in_gb
+        error "The size of the Volume can only be increased and not decreased! Volume: #{name} - old size #{volume.size} GB - new size #{size_in_gb} GB" 
+      elsif volume.size != size_in_gb
+        volume.update :size => size_in_gb
+        volume.wait_for { ready? }
+      end
+
+      log log_message
+      volume
+    rescue => e
+      log log_message
+      raise e
     end
 
     def find_and_update_server
