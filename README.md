@@ -79,6 +79,7 @@ Add the following profitbricks config to your node:
   * can be set in .chef/knife.rb, too!
  * authorized-key
   * This public key will be uploaded as authorized_keys to the ssh-user
+  * Default is the first match of ~/.ssh/*.pub
   * can be set in .chef/knife.rb, too!
 
 ### The following steps will be executed
