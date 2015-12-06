@@ -5,6 +5,10 @@ module KnifeProfitbricks
         def self.included(base)
           base.class_eval do
             property_reader :ips
+
+            def self.ips
+              @ips ||= list.collect(&:ips).flatten
+            end
           end
         end
       end

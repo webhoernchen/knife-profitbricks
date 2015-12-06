@@ -15,8 +15,8 @@ module KnifeProfitbricks
           log "   * Allocation state: #{server.allocation_state}"
           log "   * State: #{server.vm_state}"
           log "   * OS: #{server.licence_type}"
-          log "   * IP: #{server.ips.join(',')}"
           
+          ips_for_server server
           volumes_info_for_server server
           lvs_info_for_server server if server.boot_volume
           
@@ -44,6 +44,27 @@ module KnifeProfitbricks
           log "     * #{k}: #{v}"
         end
       end
+    end
+
+    def ips_for_server(server)
+      ips = server.ips
+      
+      if ips.count == 1
+        ip = ips.first
+        fixed_info = fixed_info_for_ip ip
+        log "   * IP: #{ip}#{fixed_info}"
+      else
+        log "   * IPs:"
+        ips.each do |ip|
+          fixed_info = fixed_info_for_ip ip
+          log "     * #{ip}#{fixed_info}"
+        end
+      end
+    end
+
+    def fixed_info_for_ip(ip)
+      fixed = ProfitBricks::IPBlock.ips.include?(ip)
+      fixed ? ' fixed' : ''
     end
   end
 end
