@@ -31,16 +31,34 @@ knife profitbricks server list
 Example:
 
  * DC: Data center 1
-  * Server: Server name 1 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
-     * Volume: Volume name 1 (5 GB)
-     * Volume: Volume name 2 (10 GB)
-  * Server: Server name 2 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
-     * Volume: Volume name 1 (5 GB)
-     * Volume: Volume name 2 (10 GB)
+   * Server: Server name 1 (2 cores; 2048 MB RAM)
+     * Allocation state: (Dea|A)llocated
+     * State: RUNNING/SHUTOFF
+     * OS: LINUX
+     * IP: 0.0.0.0 (fixed)
+     * Volumes:
+       * Volume name 1 (5 GB)
+       * Volume name 2 (10 GB)
+     * LVS: complete
+   * Server: Server name 2 (2 cores; 2048 MB RAM)
+     * Allocation state: (Dea|A)llocated
+     * State: RUNNING/SHUTOFF
+     * OS: LINUX
+     * IP: 0.0.0.0 (fixed)
+     * Volumes:
+       * Volume name 1 (5 GB)
+       * Volume name 2 (10 GB)
+     * LVS: complete
  * DC: Data center 2
-  * Server: Server name 1 (2 cores; 2048 MB RAM; IP: 0.0.0.0; state of the machine)
-     * Volume: Volume name 1 (5 GB)
-     * Volume: Volume name 2 (10 GB)
+   * Server: Server name 3 (2 cores; 2048 MB RAM)
+     * Allocation state: (Dea|A)llocated
+     * State: RUNNING/SHUTOFF
+     * OS: LINUX
+     * IP: 0.0.0.0 (fixed)
+     * Volumes:
+       * Volume name 1 (5 GB)
+       * Volume name 2 (10 GB)
+     * LVS: complete
 
 ## Server provision (create or update)
 
@@ -59,6 +77,7 @@ Add the following profitbricks config to your node:
       "name": "name_of_the_server",
       "cores": 1,
       "ram_in_gb": 1,
+      "fixed_ip": BOOLEAN,
       "volumes": {
         // Name of the volume and size in GB; Root is the boot volume
         "root": 10, 
