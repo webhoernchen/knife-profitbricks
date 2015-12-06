@@ -37,6 +37,10 @@ module KnifeProfitbricks
       server && server.ips.first
     end
 
+    def fixed_ip_for_nic?
+      server_config['fixed_ip'] || false
+    end
+
     def boot_image_name
       @image_name ||= Chef::Config[:knife][:profitbricks_image]
     end

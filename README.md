@@ -31,34 +31,36 @@ knife profitbricks server list
 Example:
 
  * DC: Data center 1
-   * Server: Server name 1 (2 cores; 2048 MB RAM)
-     * Allocation state: (Dea|A)llocated
-     * State: RUNNING/SHUTOFF
-     * OS: LINUX
-     * IP: 0.0.0.0 (fixed)
-     * Volumes:
-       * Volume name 1 (5 GB)
-       * Volume name 2 (10 GB)
-     * LVS: complete
-   * Server: Server name 2 (2 cores; 2048 MB RAM)
-     * Allocation state: (Dea|A)llocated
-     * State: RUNNING/SHUTOFF
-     * OS: LINUX
-     * IP: 0.0.0.0 (fixed)
-     * Volumes:
-       * Volume name 1 (5 GB)
-       * Volume name 2 (10 GB)
-     * LVS: complete
+  * Server: Server name 1 (2 cores; 2048 MB RAM)
+   * Allocation state: (Dea|A)llocated
+   * State: RUNNING/SHUTOFF
+   * OS: LINUX
+   * IP: 0.0.0.0 (fixed)
+   * Volumes:
+    * Volume name 1 (5 GB)
+    * Volume name 2 (10 GB)
+   * LVS: complete
+  * Server: Server name 2 (2 cores; 2048 MB RAM)
+   * Allocation state: (Dea|A)llocated
+   * State: RUNNING/SHUTOFF
+   * OS: LINUX
+   * IPs:
+    * 0.0.0.0 (fixed)
+    * 0.0.0.1
+   * Volumes:
+    * Volume name 1 (5 GB)
+    * Volume name 2 (10 GB)
+   * LVS: complete
  * DC: Data center 2
-   * Server: Server name 3 (2 cores; 2048 MB RAM)
-     * Allocation state: (Dea|A)llocated
-     * State: RUNNING/SHUTOFF
-     * OS: LINUX
-     * IP: 0.0.0.0 (fixed)
-     * Volumes:
-       * Volume name 1 (5 GB)
-       * Volume name 2 (10 GB)
-     * LVS: complete
+  * Server: Server name 3 (2 cores; 2048 MB RAM)
+   * Allocation state: (Dea|A)llocated
+   * State: RUNNING/SHUTOFF
+   * OS: LINUX
+   * IP: 0.0.0.0 (fixed)
+   * Volumes:
+    * Volume name 1 (5 GB)
+    * Volume name 2 (10 GB)
+   * LVS: complete
 
 ## Server provision (create or update)
 
@@ -100,6 +102,9 @@ Add the following profitbricks config to your node:
   * This public key will be uploaded as authorized_keys to the ssh-user
   * Default is the first match of ~/.ssh/*.pub
   * can be set in .chef/knife.rb, too!
+ * fixed_ip
+  * can be a boolean value
+  * can only be set in node config
 
 ### The following steps will be executed
 
