@@ -89,7 +89,7 @@ module KnifeProfitbricks
       log 'Add nic to server'
       
       options = {:firewallActive => false, :lan => public_lan.id}
-      add_options_for_fixed_ip options
+      add_options_for_reserved_ip options
       nic = server.create_nic options 
       nic.wait_for { ready? }
       
@@ -99,8 +99,8 @@ module KnifeProfitbricks
       nic
     end
 
-    def add_options_for_fixed_ip(options)
-      if fixed_ip_for_nic?
+    def add_options_for_reserved_ip(options)
+      if reserve_ip?
         log 'Reserve 1 fixed ip'
         ipblock = ProfitBricks::IPBlock.reserve :location => dc_region, :size => 1
         

@@ -37,8 +37,12 @@ module KnifeProfitbricks
       server && server.ips.first
     end
 
-    def fixed_ip_for_nic?
-      server_config['fixed_ip'] || false
+    def reserve_ip?
+      if server_config.has_key? 'fixed_ip'
+        Chef::Config[:deprecated_error] = "\n option 'fixed_ip' removed soon!\nPlease use 'reserve_ip'!"
+      else
+        server_config['reserve_ip'] ||= true
+      end
     end
 
     def boot_image_name

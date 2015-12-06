@@ -51,20 +51,20 @@ module KnifeProfitbricks
       
       if ips.count == 1
         ip = ips.first
-        fixed_info = fixed_info_for_ip ip
-        log "   * IP: #{ip}#{fixed_info}"
+        reserved_info = reserved_info_for_ip ip
+        log "   * IP: #{ip}#{reserved_info}"
       else
         log "   * IPs:"
         ips.each do |ip|
-          fixed_info = fixed_info_for_ip ip
-          log "     * #{ip}#{fixed_info}"
+          reserved_info = reserved_info_for_ip ip
+          log "     * #{ip}#{reserved_info}"
         end
       end
     end
 
-    def fixed_info_for_ip(ip)
+    def reserved_info_for_ip(ip)
       fixed = ProfitBricks::IPBlock.ips.include?(ip)
-      fixed ? ' fixed' : ''
+      fixed ? ' (reserved)' : ''
     end
   end
 end

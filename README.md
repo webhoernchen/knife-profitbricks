@@ -35,7 +35,7 @@ Example:
    * Allocation state: (Dea|A)llocated
    * State: RUNNING/SHUTOFF
    * OS: LINUX
-   * IP: 0.0.0.0 (fixed)
+   * IP: 0.0.0.0 (reserved)
    * Volumes:
     * Volume name 1 (5 GB)
     * Volume name 2 (10 GB)
@@ -45,7 +45,7 @@ Example:
    * State: RUNNING/SHUTOFF
    * OS: LINUX
    * IPs:
-    * 0.0.0.0 (fixed)
+    * 0.0.0.0 (reserved)
     * 0.0.0.1
    * Volumes:
     * Volume name 1 (5 GB)
@@ -56,7 +56,7 @@ Example:
    * Allocation state: (Dea|A)llocated
    * State: RUNNING/SHUTOFF
    * OS: LINUX
-   * IP: 0.0.0.0 (fixed)
+   * IP: 0.0.0.0 (reserved)
    * Volumes:
     * Volume name 1 (5 GB)
     * Volume name 2 (10 GB)
@@ -79,7 +79,7 @@ Add the following profitbricks config to your node:
       "name": "name_of_the_server",
       "cores": 1,
       "ram_in_gb": 1,
-      "fixed_ip": BOOLEAN,
+      "reserve_ip": BOOLEAN,
       "volumes": {
         // Name of the volume and size in GB; Root is the boot volume
         "root": 10, 
@@ -102,7 +102,7 @@ Add the following profitbricks config to your node:
   * This public key will be uploaded as authorized_keys to the ssh-user
   * Default is the first match of ~/.ssh/*.pub
   * can be set in .chef/knife.rb, too!
- * fixed_ip
+ * reserve_dip
   * can be a boolean value
   * can only be set in node config
 
