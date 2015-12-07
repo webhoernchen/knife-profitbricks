@@ -27,8 +27,36 @@ module KnifeProfitbricks
         server.update :cores => cores, :ram => ram
         server.wait_for { ready? }
       end
-      
+     
+      ipdate_nics
       update_volumes
+    end
+
+    def update_nics
+      log "Update nic"
+
+      if reserve_ip? && !server.ips.any? {|ip| ProfitBricks::IPBlock.ips.include?(ip) }
+        lans = dc.lans
+        lan_ids = lans.collect(&:id)
+
+        nic = server.nics.detect {|n| lan_ids.include? n.lan_id }
+
+        options = {:firewallActive => nic.firewallActive, 
+          :lan => nic.lan_id}
+        add_options_for_reserved_ip options
+        new_nic = server.create_nic options
+        new_nic.wait_for { ready? }
+
+        nic.fw_rules.each do |rule|
+          new_rule = new_nic.create_firewall_rule rule.clone_options
+          new_rule.wait_for { ready? }
+        end
+        new_nic.wait_for { ready? }
+
+        nic.delete
+        nic.wait_for { ready? }
+      end
+      log "Nic updated"
     end
 
     def update_volumes
