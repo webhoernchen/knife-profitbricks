@@ -4,6 +4,7 @@ require 'knife_profitbricks/data_center'
 require 'knife_profitbricks/ssh_commands'
 require 'knife_profitbricks/create_server'
 require 'knife_profitbricks/update_server'
+require 'knife_profitbricks/stop_server'
 require 'knife_profitbricks/provision'
 
 module KnifeProfitbricks
@@ -14,6 +15,7 @@ module KnifeProfitbricks
     include KnifeProfitbricks::SshCommands
     include KnifeProfitbricks::CreateServer
     include KnifeProfitbricks::UpdateServer
+    include KnifeProfitbricks::StopServer
     include KnifeProfitbricks::Provision
       
     deps do

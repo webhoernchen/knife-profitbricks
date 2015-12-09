@@ -34,7 +34,11 @@ module KnifeProfitbricks
     end
 
     def server_ip
-      server && server.ips.first
+      @server_ip ||= (server && server.ips.first)
+    end
+
+    def reset_server_ip
+      @server_ip = nil
     end
 
     def reserve_ip?

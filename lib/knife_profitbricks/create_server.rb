@@ -101,10 +101,10 @@ module KnifeProfitbricks
 
     def add_options_for_reserved_ip(options)
       if reserve_ip?
-        log 'Reserve 1 fixed ip'
+        log 'Reserve 1 IP'
         ipblock = ProfitBricks::IPBlock.reserve :location => dc_region, :size => 1
         
-        log "1 ip reserved: #{ipblock.ips.first}"
+        log "1 IP reserved: #{ipblock.ips.first}"
         options[:ips] = ipblock.ips
       end
     end

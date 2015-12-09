@@ -33,11 +33,16 @@ module KnifeProfitbricks
     end
 
     def update_nics
-      log "Update nic"
-
       if reserve_ip? && !server.ips.any? {|ip| ProfitBricks::IPBlock.ips.include?(ip) }
+        
+        shutdown_server
+        log ''
+        stop_server
+        log ''
+
+        log "Update nic"
         lans = dc.lans
-        lan_ids = lans.collect(&:id)
+        lan_ids = lans.collect(&:id).collect(&:to_i)
 
         nic = server.nics.detect {|n| lan_ids.include? n.lan_id }
 
@@ -47,7 +52,7 @@ module KnifeProfitbricks
         new_nic = server.create_nic options
         new_nic.wait_for { ready? }
 
-        nic.fw_rules.each do |rule|
+        nic.firewall_rules.each do |rule|
           new_rule = new_nic.create_firewall_rule rule.clone_options
           new_rule.wait_for { ready? }
         end
@@ -55,8 +60,10 @@ module KnifeProfitbricks
 
         nic.delete
         nic.wait_for { ready? }
+        reset_server_ip
+      
+        log "Nic updated"
       end
-      log "Nic updated"
     end
 
     def update_volumes

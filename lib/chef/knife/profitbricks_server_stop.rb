@@ -2,6 +2,7 @@ require 'knife_profitbricks/base'
 require 'knife_profitbricks/config'
 require 'knife_profitbricks/data_center'
 require 'knife_profitbricks/ssh_commands'
+require 'knife_profitbricks/stop_server'
 
 module KnifeProfitbricks
   class ProfitbricksServerStop < Chef::Knife
@@ -9,6 +10,7 @@ module KnifeProfitbricks
     include KnifeProfitbricks::Config
     include KnifeProfitbricks::DataCenter
     include KnifeProfitbricks::SshCommands
+    include KnifeProfitbricks::StopServer
     
     deps do
       require 'net/ssh'
@@ -53,41 +55,6 @@ module KnifeProfitbricks
       end
 
       dc.server_by_name(server_name)
-    end
-
-    def shutdown_server
-      if server.running?
-        log "Server is running."
-        log 'Shutdown server'
-
-        ssh('sudo shutdown -h now').run
-        
-        server.wait_for { reload; shutoff? }
-        
-        log ''
-        log 'Server is down'
-      else
-        server.wait_for { reload; shutoff? }
-        log 'Server is down'
-      end
-    end
-
-    def stop_server
-      if server.available?
-        log "Server hardware is running."
-        log 'Stop server'
-        
-        server.stop
-        server.wait_for { ready? }
-        server.wait_for { reload; inactive? }
-        
-        log ''
-        log 'Server is inactive'
-      else
-        server.wait_for { ready? }
-        server.wait_for { reload; inactive? }
-        log 'Server is inactive'
-      end
     end
   end
 end
