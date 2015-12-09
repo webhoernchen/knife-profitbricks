@@ -28,7 +28,7 @@ module KnifeProfitbricks
         server.wait_for { ready? }
       end
      
-      ipdate_nics
+      update_nics
       update_volumes
     end
 

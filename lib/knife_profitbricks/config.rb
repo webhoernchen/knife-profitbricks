@@ -41,7 +41,7 @@ module KnifeProfitbricks
       if server_config.has_key? 'fixed_ip'
         Chef::Config[:deprecated_error] = "\n option 'fixed_ip' removed soon!\nPlease use 'reserve_ip'!"
       else
-        server_config['reserve_ip'] ||= true
+        server_config['reserve_ip'] ||= false
       end
     end
 
