@@ -17,6 +17,7 @@ module KnifeProfitbricks
           require 'chef/knife'
           require 'knife_profitbricks/extension/profitbricks/profitbricks'
           require 'knife_profitbricks/extension/profitbricks/model'
+          require 'knife_profitbricks/extension/profitbricks/has_location'
           require 'knife_profitbricks/extension/profitbricks/server'
           require 'knife_profitbricks/extension/profitbricks/datacenter'
           require 'knife_profitbricks/extension/profitbricks/volume'

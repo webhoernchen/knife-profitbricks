@@ -7,7 +7,11 @@ module KnifeProfitbricks
             property_reader :ips
 
             def self.ips
-              @ips ||= list.collect(&:ips).flatten
+              @ips ||= all.collect(&:ips).flatten
+            end
+            
+            def self.all
+              @all ||= list
             end
           end
         end
@@ -17,3 +21,4 @@ module KnifeProfitbricks
 end
 
 ProfitBricks::IPBlock.send :include, KnifeProfitbricks::Extension::Profitbricks::IPBlock
+ProfitBricks::IPBlock.send :include, KnifeProfitbricks::Extension::Profitbricks::HasLocation

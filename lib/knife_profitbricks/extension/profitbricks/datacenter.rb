@@ -4,7 +4,7 @@ module KnifeProfitbricks
       module Datacenter
         def self.included(base)
           base.class_eval do
-            property_reader :name, :location
+            property_reader :name
 
             def self.list_sorted
               list.sort_by(&:name)
@@ -21,17 +21,10 @@ module KnifeProfitbricks
             server.name == server_name
           end
         end
-
-        def _location
-          @location ||= ProfitBricks::Location.by_id(location)
-        end
-
-        def location_label
-          _location.label
-        end
       end
     end
   end
 end
 
 ProfitBricks::Datacenter.send :include, KnifeProfitbricks::Extension::Profitbricks::Datacenter
+ProfitBricks::Datacenter.send :include, KnifeProfitbricks::Extension::Profitbricks::HasLocation
