@@ -28,7 +28,7 @@ module KnifeProfitbricks
         
         error("No region specified! Please specify \"profitbricks\": {\"region\": \"name\"} in your node!") unless dc_region
         
-        dc = ProfitBricks::Datacenter.create(:name => dc_name, location: dc_region)
+        dc = ProfitBricks::Datacenter.create(:name => dc_name, :location => dc_region)
         dc.wait_for { ready? }
         
         log "Datacenter #{dc_name.inspect} created"

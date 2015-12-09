@@ -27,6 +27,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/request'
           require 'knife_profitbricks/extension/profitbricks/ipblock'
           require 'knife_profitbricks/extension/profitbricks/firewall'
+          require 'knife_profitbricks/extension/profitbricks/location'
           
           Chef::Knife.load_deps
           

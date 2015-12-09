@@ -9,6 +9,8 @@ module KnifeProfitbricks
     def run
       ProfitBricks::Datacenter.list_sorted.each do |dc|
         log "DC: #{dc.name}"
+        log " * Location: #{dc.location_label}"
+        log ""
 
         dc.servers.each do |server|
           log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM)"
