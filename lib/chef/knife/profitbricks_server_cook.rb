@@ -71,7 +71,7 @@ module KnifeProfitbricks
       add_server_to_known_hosts__if_new
       bootstrap_or_cook
 
-#      reboot_server__if_new
+      reboot_server__if_new
     end
 
     private
