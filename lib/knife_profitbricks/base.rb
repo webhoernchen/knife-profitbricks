@@ -1,17 +1,38 @@
-require 'profitbricks_provision'
-
 module KnifeProfitbricks
   module Base
+
+    LVS_ATTRIBUTES = [
+      :cpuHotPlug,
+      :ramHotPlug,
+      :nicHotPlug,
+      :nicHotUnplug,
+      :discVirtioHotPlug,
+      :discVirtioHotUnplug
+    ]
+
     def self.included(base)
       base.class_eval do 
         deps do 
+          require 'profitbricks'
           require 'chef/knife'
+          require 'knife_profitbricks/extension/profitbricks/profitbricks'
+          require 'knife_profitbricks/extension/profitbricks/model'
+          require 'knife_profitbricks/extension/profitbricks/has_location'
+          require 'knife_profitbricks/extension/profitbricks/server'
+          require 'knife_profitbricks/extension/profitbricks/datacenter'
+          require 'knife_profitbricks/extension/profitbricks/volume'
+          require 'knife_profitbricks/extension/profitbricks/nic'
+          require 'knife_profitbricks/extension/profitbricks/location'
+          require 'knife_profitbricks/extension/profitbricks/image'
+          require 'knife_profitbricks/extension/profitbricks/lan'
+          require 'knife_profitbricks/extension/profitbricks/request'
+          require 'knife_profitbricks/extension/profitbricks/ipblock'
+          require 'knife_profitbricks/extension/profitbricks/firewall'
+          require 'knife_profitbricks/extension/profitbricks/location'
           
           Chef::Knife.load_deps
           
           Chef::Config[:solo] = true
-
-          ::ProfitBricksProvision::Config.ui = ui
         end
 
         option :profitbricks_data_bag,
@@ -66,6 +87,19 @@ module KnifeProfitbricks
       else
         [ENV['PROFITBRICKS_USER'], ENV['PROFITBRICKS_PASSWORD']]
       end
+    end
+
+    def log(m)
+      ui.info m
+    end
+
+    def log_error(m)
+      error m, :abort => false
+    end
+
+    def error(m, options={})
+      ui.error m
+      exit 1 if !options.has_key?(:abort) || options[:abort]
     end
   end
 end
