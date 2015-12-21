@@ -29,6 +29,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/ipblock'
           require 'knife_profitbricks/extension/profitbricks/firewall'
           require 'knife_profitbricks/extension/profitbricks/location'
+          require 'knife_profitbricks/extension/profitbricks/wait_for'
           
           Chef::Knife.load_deps
           
@@ -65,7 +66,7 @@ module KnifeProfitbricks
         config.username = user
         config.password = password
         config.global_classes = false
-        config.timeout = 120
+        config.timeout = 300
       end
       
       log "Established ..."
