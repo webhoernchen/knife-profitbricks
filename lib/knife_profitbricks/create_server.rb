@@ -24,7 +24,7 @@ module KnifeProfitbricks
     def _create_volume(hd_name, size_in_gb)
       name = "#{server_name}_#{hd_name}"
       log_message = "Create Volume '#{name}' size: #{size_in_gb} GB"
-      options = { :name => name, :size => size_in_gb }
+      options = { :name => name, :size => size_in_gb, :type => 'HDD' }
       
       if hd_name == 'root'
         log_message = "#{log_message}\nBased on #{boot_image.name}"

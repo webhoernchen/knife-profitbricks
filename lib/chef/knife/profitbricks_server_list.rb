@@ -50,7 +50,7 @@ module KnifeProfitbricks
       log "   * Volumes:"
       
       server.volumes.each do |volume|
-        log "     * #{volume.name} (#{volume.size} GB)"
+        log "     * #{volume.name} - #{server.type} (#{volume.size} GB)"
       end
     end
 
