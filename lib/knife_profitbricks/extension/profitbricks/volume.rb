@@ -23,6 +23,11 @@ module KnifeProfitbricks
             sum
           end
         end
+
+        # HDD or SSD
+        def disc_type
+          read_property :type
+        end
       end
     end
   end
