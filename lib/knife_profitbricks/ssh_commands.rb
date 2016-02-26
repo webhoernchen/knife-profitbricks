@@ -101,9 +101,17 @@ module KnifeProfitbricks
       log ''
     end
 
+    def custom_timeout(*args, &block)
+      if defined? Timeout
+        Timeout.timeout(*args, &block)
+      else
+        timeout(*args, &block)
+      end
+    end
+
     def ssh_test
       begin
-        timeout 3 do
+        custom_timeout 3 do
           s = TCPSocket.new server_ip, 22
           s.close
           true
