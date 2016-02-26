@@ -45,23 +45,19 @@ module KnifeProfitbricks
       raise e
     end
 
-    def do_create_server(boot_volume)
+    def do_create_server
       ram_in_gb = server_config['ram_in_gb']
       ram = ram_in_gb * 1024
       cores = server_config['cores']
       
-      log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores - Boot volume: #{boot_volume.name}"
+      log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores"
       
-      server = dc.create_server(:cores => cores, :ram => ram, 
-          :name => server_name, 
-          :bootVolume => {:id => boot_volume.id, :type => 'volume', :href => boot_volume.href},
-          :bootCdrom => nil)
-      
+      server = dc.create_server :cores => cores, :ram => ram, :name => server_name
       server.wait_for { ready? }
+      
       add_nic_to_server server
 
       server.reload
-      boot_volume.reload
 
       log "Server '#{server_name}' created"
       log ''
@@ -124,6 +120,20 @@ module KnifeProfitbricks
       server.reload
     end
 
+    def set_boot_volume_to_server(boot_volume)
+      log "Set boot volume: #{boot_volume.name}"
+
+      server.update :bootVolume => {:id => boot_volume.id, 
+        :type => 'volume', :href => boot_volume.href}
+
+      server.wait_for { ready? }
+      server.reload
+      boot_volume.reload
+      
+      log "Volume #{boot_volume.name} is used as boot volume!"
+      log ''
+    end
+
     def create_server
       @server_is_new = true
       log "Create Server #{server_name.inspect}"
@@ -131,9 +141,10 @@ module KnifeProfitbricks
       
       volumes = create_volumes
       boot_volume = volumes.detect {|v| v.name.end_with? 'root' }
-      @server = server = do_create_server boot_volume
-      attach_volumes_to_server volumes - [boot_volume]
-
+      @server = server = do_create_server
+      attach_volumes_to_server volumes
+      set_boot_volume_to_server boot_volume
+      
       check_server_state!
 
       change_password_root
