@@ -53,7 +53,7 @@ module KnifeProfitbricks
       if @server_is_new
         user_and_server = "#{Chef::Config[:knife][:ssh_user]}@#{server_ip}"
 
-        installed_kernel = `ssh #{user_and_server} "ls /boot/initrd.img-* | sort -V -r | head -n 1 | sed -e 's/\/boot\/initrd.img-//g'"`.strip
+        installed_kernel = `ssh #{user_and_server} "ls /boot/initrd.img-* | sort -V -r | head -n 1 | sed -e 's/\\/boot\\/initrd\\.img-//g'"`.strip
         loaded_kernel = `ssh #{user_and_server} "uname -r"`.strip
 
         if installed_kernel != loaded_kernel
