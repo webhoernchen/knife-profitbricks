@@ -102,7 +102,7 @@ module KnifeProfitbricks
     end
 
     def custom_timeout(*args, &block)
-      if defined? Timeout
+      if defined?(Timeout) && Timeout.respond_to?(:timeout)
         Timeout.timeout(*args, &block)
       else
         timeout(*args, &block)
