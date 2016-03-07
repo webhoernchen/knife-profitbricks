@@ -4,7 +4,7 @@ module KnifeProfitbricks
       module IPBlock
         def self.included(base)
           base.class_eval do
-            property_reader :ips
+            property_reader :ips, :name
 
             def self.ips
               @ips ||= all.collect(&:ips).flatten

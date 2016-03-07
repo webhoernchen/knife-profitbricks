@@ -31,7 +31,7 @@ module KnifeProfitbricks
         log 'IP blocks:'
         ProfitBricks::IPBlock.all.each_with_index do |ip_block, i|
           log "Index: #{i}"
-#          log "Name: #{ip_block.name}"
+          log " * Name: #{ip_block.name}"
           log " * Location: #{ip_block.location_label}"
           log " * IPs:"
 
