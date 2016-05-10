@@ -7,7 +7,7 @@ module KnifeProfitbricks
     banner "knife profitbricks server list OPTIONS"
 
     def run
-      ProfitBricks::Datacenter.list_sorted.each do |dc|
+      ProfitBricks::Datacenter.list_sorted[-1..-1].each do |dc|
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
         log ""

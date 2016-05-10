@@ -30,6 +30,8 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/firewall'
           require 'knife_profitbricks/extension/profitbricks/location'
           require 'knife_profitbricks/extension/profitbricks/wait_for'
+          require 'knife_profitbricks/extension/profitbricks/billing'
+          require 'knife_profitbricks/extension/profitbricks/billing/traffic'
           
           Chef::Knife.load_deps
           
