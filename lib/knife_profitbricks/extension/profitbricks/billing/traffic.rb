@@ -4,7 +4,38 @@ require 'active_support/core_ext/time'
 require 'active_support/core_ext/numeric/bytes'
 require 'active_support/core_ext/string/conversions'
 
-class ProfitBricks::Billing::Traffic
+class ProfitBricks::Billing::TrafficTable
+
+  def self.by_period(period)
+    @periods ||= {}
+    @periods[period] ||= ProfitBricks::Billing.request(:method => :get,
+      :path => "/#{contract_id}/traffic/#{period}",
+      :expects => 200)['traffic']
+  end
+
+  private
+  def self.request(params)
+    ProfitBricks::Billing.request params
+  end
+  
+  def self.contract_id
+    ProfitBricks::Billing.contract_id
+  end
+end
+
+class ProfitBricks::Billing::TrafficDay
+  attr_accessor :number_of_day, :bytes
+
+  def megabytes
+   (bytes.to_i / 1.megabyte).round(2) if bytes
+  end
+
+  def gigabytes
+   (bytes.to_i / 1.gigabytes).round(2) if bytes
+  end
+end
+
+class ProfitBricks::Billing::TrafficRow
   attr_accessor :in_or_out, :dc_id, :dc_name, :days
 
   def self.by_current_period
@@ -16,40 +47,53 @@ class ProfitBricks::Billing::Traffic
   end
 
   def self.by_current_period_and_dc_id(dc_id)
-    meta_line = by_current_period.first
-    by_current_period[1..-1].collect do |line|
-      initialize meta_line, line
-    end.select do |traffic|
-      traffic.dc_id == dc_id
-    end.inject({}) do |sum, traffic|
-      sum[traffic.in_or_out] = traffic
-      sum
-    end
+    by_period_and_dc_id default_period, dc_id
   end
 
   def initialize(meta_line, line)
-    meta_line.each_with_index do |attr_name, index|
+    line = line.split(',')
+
+    meta_line.split(',').each_with_index do |attr_name, index|
       case attr_name
       when /^IN\/OUT$/i
         self.in_or_out = line[index]
-      when /^VDC\ UUID$/
+      when /^VDC\ UUID$/i
         self.dc_id = line[index]
-      when /^VDC\ NAME$/
+      when /^VDC\ NAME$/i
         self.dc_name = line[index]
       when /^[0-9]{4}(-[0-9]{2}){2}$/
         self.days ||= {}
-        day = attr_name.split('-').last.to_i
-        self.days[day] = line[index]
+        number_of_day = attr_name.split('-').last.to_i
+        day = self.days[number_of_day] = ProfitBricks::Billing::TrafficDay.new
+        day.number_of_day = number_of_day
+        day.bytes = line[index]
+#        day.bytes = 0 unless day.bytes
       end
     end
   end
 
+  def megabytes
+    days.values.collect(&:megabytes).compact.sum
+  end
+
   private
   def self.by_period(period)
-    @periods ||= {}
-    @periods[period] ||= ProfitBricks::Billing.request(:method => :get,
-      :path => "/#{contract_id}/traffic/#{period}",
-      :expects => 200)['traffic']
+    @cached_by_period ||= uncached_by_period period
+  end
+
+  def self.uncached_by_period(period)
+    table_rows = ProfitBricks::Billing::TrafficTable.by_period period
+    meta_line = table_rows.first
+
+    table_rows[1..-1].collect do |line|
+      new meta_line, line
+    end
+  end
+  
+  def self.by_period_and_dc_id(period, dc_id)
+    by_period(period).select do |traffic|
+      traffic.dc_id == dc_id
+    end
   end
 
   def self.default_period
@@ -58,13 +102,5 @@ class ProfitBricks::Billing::Traffic
 
   def self.period_for(date)
     date.strftime '%Y-%m'
-  end
-
-  def self.request(params)
-    ProfitBricks::Billing.request params
-  end
-  
-  def self.contract_id
-    ProfitBricks::Billing.contract_id
   end
 end

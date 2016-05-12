@@ -10,6 +10,12 @@ module KnifeProfitbricks
       ProfitBricks::Datacenter.list_sorted[-1..-1].each do |dc|
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
+        
+        rows = ProfitBricks::Billing::TrafficRow.by_current_period_and_dc_id dc.id
+        rows.each do |row|
+          log " * Traffic #{row.in_or_out}: #{row.megabytes}"
+        end
+
         log ""
 
         dc.servers.each do |server|
