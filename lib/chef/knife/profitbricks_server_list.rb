@@ -7,7 +7,7 @@ module KnifeProfitbricks
     banner "knife profitbricks server list OPTIONS"
 
     def run
-      ProfitBricks::Datacenter.list_sorted[-1..-1].each do |dc|
+      ProfitBricks::Datacenter.list_sorted.each do |dc|
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
         
@@ -85,7 +85,7 @@ module KnifeProfitbricks
         log "   * IPs:"
         ips.each do |ip|
           reserved_info = reserved_info_for_ip ip
-        reserved_hash[ip] = "DC: #{dc.name} => Server: #{server.name}"
+          reserved_hash[ip] = "DC: #{dc.name} => Server: #{server.name}"
           
           log "     * #{ip}#{reserved_info}"
         end
