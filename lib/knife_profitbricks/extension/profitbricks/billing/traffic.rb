@@ -3,6 +3,7 @@ require 'active_support/core_ext/date_time'
 require 'active_support/core_ext/time'
 require 'active_support/core_ext/numeric/bytes'
 require 'active_support/core_ext/string/conversions'
+require 'active_support/core_ext/enumerable'
 
 class ProfitBricks::Billing::TrafficTable
 
