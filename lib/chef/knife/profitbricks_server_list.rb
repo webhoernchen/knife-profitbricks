@@ -11,9 +11,18 @@ module KnifeProfitbricks
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
         
-        rows = ProfitBricks::Billing::TrafficRow.by_current_period_and_dc_id dc.id
-        rows.each do |row|
-          log " * Traffic #{row.in_or_out}: #{row.megabytes}"
+        log ""
+       
+        log " * Traffic current period: #{dc.current_traffic_period}"
+        dc.current_traffic_rows.each do |row|
+          log "   * #{row.in_or_out}: #{row.megabytes} MB"
+        end
+        
+        log ""
+        
+        log " * Traffic previous period: #{dc.previous_traffic_period}"
+        dc.previous_traffic_rows.each do |row|
+          log "   * #{row.in_or_out}: #{row.megabytes} MB"
         end
 
         log ""

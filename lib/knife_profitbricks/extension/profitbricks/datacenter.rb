@@ -21,6 +21,24 @@ module KnifeProfitbricks
             server.name == server_name
           end
         end
+
+        def current_traffic_rows
+          @current_traffic_rows ||= ProfitBricks::Billing::TrafficRow.by_current_period_and_dc_id id
+        end
+
+        def current_traffic_period
+          row = current_traffic_rows.first
+          row && row.period
+        end
+
+        def previous_traffic_rows
+          @previous_traffic_rows ||= ProfitBricks::Billing::TrafficRow.by_previous_period_and_dc_id id
+        end
+
+        def previous_traffic_period
+          row = previous_traffic_rows.first
+          row && row.period
+        end
       end
     end
   end

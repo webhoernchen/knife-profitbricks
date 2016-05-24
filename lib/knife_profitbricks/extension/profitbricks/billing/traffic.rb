@@ -2,6 +2,7 @@ require 'active_support/core_ext/date'
 require 'active_support/core_ext/date_time'
 require 'active_support/core_ext/time'
 require 'active_support/core_ext/numeric/bytes'
+require 'active_support/core_ext/integer/time'
 require 'active_support/core_ext/string/conversions'
 require 'active_support/core_ext/enumerable'
 
@@ -37,7 +38,7 @@ class ProfitBricks::Billing::TrafficDay
 end
 
 class ProfitBricks::Billing::TrafficRow
-  attr_accessor :in_or_out, :dc_id, :dc_name, :days
+  attr_accessor :in_or_out, :dc_id, :dc_name, :days, :period
 
   def self.by_current_period
     by_period default_period
@@ -45,6 +46,10 @@ class ProfitBricks::Billing::TrafficRow
 
   def self.by_period_for_date(date)
     by_period period_for date
+  end
+
+  def self.by_previous_period_and_dc_id(dc_id)
+    by_period_and_dc_id previous_period, dc_id
   end
 
   def self.by_current_period_and_dc_id(dc_id)
@@ -63,6 +68,7 @@ class ProfitBricks::Billing::TrafficRow
       when /^VDC\ NAME$/i
         self.dc_name = line[index]
       when /^[0-9]{4}(-[0-9]{2}){2}$/
+        self.period = attr_name.split('-')[0..1].join('.')
         self.days ||= {}
         number_of_day = attr_name.split('-').last.to_i
         day = self.days[number_of_day] = ProfitBricks::Billing::TrafficDay.new
@@ -79,7 +85,7 @@ class ProfitBricks::Billing::TrafficRow
 
   private
   def self.by_period(period)
-    @cached_by_period ||= uncached_by_period period
+    (@cached_by_period ||= {})[period] ||= uncached_by_period period
   end
 
   def self.uncached_by_period(period)
@@ -95,6 +101,10 @@ class ProfitBricks::Billing::TrafficRow
     by_period(period).select do |traffic|
       traffic.dc_id == dc_id
     end
+  end
+
+  def self.previous_period
+    period_for 1.month.ago
   end
 
   def self.default_period
