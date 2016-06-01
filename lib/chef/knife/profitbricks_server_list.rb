@@ -10,19 +10,14 @@ module KnifeProfitbricks
       ProfitBricks::Datacenter.list_sorted.each do |dc|
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
-        
-        log ""
        
-        log " * Traffic current period: #{dc.current_traffic_period}"
-        dc.current_traffic_rows.each do |row|
-          log "   * #{row.in_or_out}: #{row.megabytes} MB"
-        end
-        
-        log ""
-        
-        log " * Traffic previous period: #{dc.previous_traffic_period}"
-        dc.previous_traffic_rows.each do |row|
-          log "   * #{row.in_or_out}: #{row.megabytes} MB"
+        dc.last_3_traffic_periods.each do |period, traffic_rows|
+          log ""
+         
+          log " * Traffic period: #{period}"
+          traffic_rows.each do |row|
+            log "   * #{row.in_or_out}: #{row.megabytes} MB"
+          end
         end
 
         log ""

@@ -22,22 +22,12 @@ module KnifeProfitbricks
           end
         end
 
-        def current_traffic_rows
-          @current_traffic_rows ||= ProfitBricks::Billing::TrafficRow.by_current_period_and_dc_id id
-        end
-
-        def current_traffic_period
-          row = current_traffic_rows.first
-          row && row.period
-        end
-
-        def previous_traffic_rows
-          @previous_traffic_rows ||= ProfitBricks::Billing::TrafficRow.by_previous_period_and_dc_id id
-        end
-
-        def previous_traffic_period
-          row = previous_traffic_rows.first
-          row && row.period
+        def last_3_traffic_periods
+          @last_3_traffic_periods ||= ProfitBricks::Billing::TrafficRow.by_last_4_periods_and_dc_id(id).flatten.inject({}) do |sum, row|
+            sum[row.period] ||= []
+            sum[row.period] << row
+            sum
+          end
         end
       end
     end

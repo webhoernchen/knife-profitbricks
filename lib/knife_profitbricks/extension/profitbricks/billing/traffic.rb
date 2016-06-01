@@ -13,6 +13,8 @@ class ProfitBricks::Billing::TrafficTable
     @periods[period] ||= ProfitBricks::Billing.request(:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
       :expects => 200)['traffic']
+  rescue Excon::Errors::NotFound
+    []
   end
 
   private
@@ -48,12 +50,11 @@ class ProfitBricks::Billing::TrafficRow
     by_period period_for date
   end
 
-  def self.by_previous_period_and_dc_id(dc_id)
-    by_period_and_dc_id previous_period, dc_id
-  end
-
-  def self.by_current_period_and_dc_id(dc_id)
-    by_period_and_dc_id default_period, dc_id
+  def self.by_last_4_periods_and_dc_id(dc_id)
+    (0..4).collect do |n|
+      period = period_for n.months.ago
+      by_period_and_dc_id period, dc_id
+    end
   end
 
   def initialize(meta_line, line)
@@ -92,8 +93,12 @@ class ProfitBricks::Billing::TrafficRow
     table_rows = ProfitBricks::Billing::TrafficTable.by_period period
     meta_line = table_rows.first
 
-    table_rows[1..-1].collect do |line|
-      new meta_line, line
+    if meta_line.nil?
+      []
+    else
+      table_rows[1..-1].collect do |line|
+        new meta_line, line
+      end
     end
   end
   
