@@ -28,8 +28,12 @@ module KnifeProfitbricks
       
       if hd_name == 'root'
         log_message = "#{log_message}\nBased on #{boot_image.name}"
-        options[:image] = boot_image.id 
-        options[:imagePassword] = root_password if boot_image.public
+        options[:image] = boot_image.id
+        
+        if boot_image.public
+          options[:imagePassword] = root_password
+          options[:sshKeys] = [ssh_key]
+        end
       else
         options[:licenceType] = 'OTHER' 
       end

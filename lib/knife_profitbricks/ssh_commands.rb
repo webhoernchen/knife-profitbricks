@@ -62,7 +62,7 @@ module KnifeProfitbricks
     def ssh_root(command)
       s = ssh(command)
       s.config[:ssh_user] = "root"
-      s.config[:ssh_password] = root_password
+#      s.config[:ssh_password] = root_password
       s
     end
 
@@ -71,10 +71,10 @@ module KnifeProfitbricks
       s.config[:ssh_user] = Chef::Config[:knife][:ssh_user]
       s
     end
-    
-    def upload_ssh_key
+
+    def ssh_key
       ## SSH Key
-      ssh_key = begin
+      @ssh_key ||= begin
         file_path = Chef::Config[:knife][:profitbricks_authorized_key] || Dir.glob("#{ENV['HOME']}/.ssh/*.pub").first
         if File.exists?(file_path)
           File.open(file_path).read.gsub(/\n/,'')
@@ -86,7 +86,9 @@ module KnifeProfitbricks
       rescue Exception => e
         error(e.message)
       end
-      
+    end
+    
+    def upload_ssh_key
       ssh_user = Chef::Config[:knife][:ssh_user]
       dot_ssh_path = if ssh_user != 'root'
         ssh_root("useradd #{ssh_user} -G sudo -m -s /bin/bash").run
@@ -135,37 +137,47 @@ module KnifeProfitbricks
 
       if old_password
         login_user = user
-        ssh_options[:password] = old_password
-        command = 'passwd'
+#        ssh_options[:password] = old_password
+#        command = 'passwd'
+        command = <<-END
+echo -e "#{password}\n#{password}\n" | passwd
+END
       else
         login_user = 'root'
-        ssh_options[:password] = root_password
-        command = "passwd #{user}"
+#        ssh_options[:password] = root_password
+#        command = "passwd #{user}"
+        command = <<-END
+echo -e "#{password}\n#{password}\n" | passwd #{user}
+END
       end
 
       begin
         Net::SSH.start( server_ip, login_user, ssh_options) do |ssh|
-          ssh.open_channel do |channel|
-             channel.on_request "exit-status" do |request_channel, data|
-                $exit_status = data.read_long
-             end
-             channel.on_data do |data_channel, data|
-                if data.inspect.include? "current"
-                  data_channel.send_data("#{old_password}\n");
-                elsif data.inspect.include? "New"
-                  data_channel.send_data("#{password}\n");
-                elsif data.inspect.include? "new"
-                  data_channel.send_data("#{password}\n");
+          ssh.exec! command.strip
+          # not work at the moment
+#          ssh.open_channel do |channel|
+#             channel.on_request "exit-status" do |request_channel, data|
+#                $exit_status = data.read_long
+#             end
+#             channel.on_data do |data_channel, data|
+#                if data.inspect.include? "current"
+#                  data_channel.send_data("#{old_password}\n");
+#                elsif data.inspect.include? "New"
+#                  data_channel.send_data("#{password}\n");
+#                elsif data.inspect.include? "new"
+#                  data_channel.send_data("#{password}\n");
 #                else
+#                  p '****************************'
 #                  p data.inspect
-                end
-             end
-             channel.request_pty
-             channel.exec(command);
-             channel.wait
-
-             return $exit_status == 0
-          end
+#                  p '****************************'
+#                end
+#             end
+#             channel.request_pty
+#             channel.exec(command);
+#             channel.wait
+#
+#             return $exit_status == 0
+#          end
         end
       # network is not stable on new server
       rescue Exception => e
