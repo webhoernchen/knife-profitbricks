@@ -118,7 +118,7 @@ module KnifeProfitbricks
           s.close
           true
         end
-      rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect
+      rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect, Net::SSH::ConnectionTimeout
         false
       end
     end

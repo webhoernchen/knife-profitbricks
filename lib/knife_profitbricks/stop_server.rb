@@ -7,15 +7,31 @@ module KnifeProfitbricks
         log "Server is running."
         log 'Shutdown server'
 
-        ssh('sudo shutdown -h now').run
-        
-        server.wait_for { reload; shutoff? }
-        
-        log ''
-        log 'Server is down'
+        if ssh_test
+          ssh('sudo shutdown -h now').run
+          
+          server.wait_for { reload; shutoff? }
+          
+          log ''
+          log 'Server is down'
+        elsif Chef::Config[:knife][:force_shutdown]
+          log ''
+          log_error 'Server is not available by ssh'
+        else
+          log ''
+          error 'Server is not available by ssh'
+        end
       else
         server.wait_for { reload; shutoff? }
         log 'Server is down'
+      end
+    rescue
+      log ''
+
+      if Chef::Config[:knife][:force_shutdown]
+        log_error 'Shutdown is not working'
+      else
+        error 'Shutdown is not working'
       end
     end
 

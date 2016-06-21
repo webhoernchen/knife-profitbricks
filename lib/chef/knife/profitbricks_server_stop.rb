@@ -31,6 +31,11 @@ module KnifeProfitbricks
       :description => "The Chef node name for your new server node",
       :proc => Proc.new { |o| Chef::Config[:knife][:chef_node_name] = o }
 
+    option :force_shutdown,
+      :long => "--force",
+      :description => "Force to stop the server through the API if the shutdown not worked",
+      :proc => Proc.new { |o| Chef::Config[:knife][:force_shutdown] = true }
+
 
     def run
       if server
