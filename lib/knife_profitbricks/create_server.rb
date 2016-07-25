@@ -24,7 +24,7 @@ module KnifeProfitbricks
     def _create_volume(hd_name, size_in_gb)
       name = "#{server_name}_#{hd_name}"
       log_message = "Create Volume '#{name}' size: #{size_in_gb} GB"
-      options = { :name => name, :size => size_in_gb, :type => 'HDD' }
+      options = { :name => name, :size => size_in_gb, :type => 'HDD' } # type SSD
       
       if hd_name == 'root'
         log_message = "#{log_message}\nBased on #{boot_image.name}"
@@ -56,7 +56,8 @@ module KnifeProfitbricks
       
       log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores"
       
-      server = dc.create_server :cores => cores, :ram => ram, :name => server_name
+      server = dc.create_server :cores => cores, :ram => ram, :name => server_name,
+        :cpuFamily => 'AMD_OPTERON' # 'INTEL_XEON'
       server.wait_for { ready? }
       
       add_nic_to_server server
