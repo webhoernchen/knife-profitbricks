@@ -8,6 +8,11 @@ module KnifeProfitbricks
       
       ram = server_config['ram_in_gb'] * 1024
       cores = server_config['cores']
+      
+      cpu = server_config['cpu']
+      cpu ||= 'amd'
+      cpu = CPU_FAMILIES[cpu.to_s]
+      raise "cpu must be #{CPU_FAMILIES.keys.join 'or'}!"
 
       log "Check LVS state #{server_name}"
       if server.lvs_support_complete?
@@ -23,8 +28,8 @@ module KnifeProfitbricks
         log "LVS config updated"
       end
       
-      if server.ram != ram || server.cores != cores
-        server.update :cores => cores, :ram => ram
+      if server.ram != ram || server.cores != cores || server.cpu_family != cpu
+        server.update :cores => cores, :ram => ram, :cpuFamily => cpu
         server.wait_for { ready? }
       end
      

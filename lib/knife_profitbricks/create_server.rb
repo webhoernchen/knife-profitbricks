@@ -54,10 +54,15 @@ module KnifeProfitbricks
       ram = ram_in_gb * 1024
       cores = server_config['cores']
       
+      cpu = server_config['cpu']
+      cpu ||= 'amd'
+      cpu = CPU_FAMILIES[cpu.to_s]
+      raise "cpu must be #{CPU_FAMILIES.keys.join 'or'}!"
+      
       log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores"
       
       server = dc.create_server :cores => cores, :ram => ram, :name => server_name,
-        :cpuFamily => 'AMD_OPTERON' # 'INTEL_XEON'
+        :cpuFamily => cpu
       server.wait_for { ready? }
       
       add_nic_to_server server

@@ -9,6 +9,11 @@ module KnifeProfitbricks
       :discVirtioHotUnPlug => true
     }
 
+    CPU_FAMILIES = {
+      :amd => 'AMD_OPTERON',
+      :intel => 'INTEL_XEON'
+    }
+
     private
     def _profitbricks_config
       n = Chef::Config[:knife][:chef_node_name]

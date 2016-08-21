@@ -4,7 +4,7 @@ module KnifeProfitbricks
       module Server
         def self.included(base)
           base.class_eval do
-            property_reader :name, :cores, :ram, :vmState
+            property_reader :name, :cores, :ram, :vmState, :cpuFamily
            
             alias_method :list_volumes_without_order, :list_volumes
             alias_method :list_volumes, :list_volumes_with_order
