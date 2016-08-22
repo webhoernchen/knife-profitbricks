@@ -59,7 +59,7 @@ module KnifeProfitbricks
       cpu = CPU_FAMILIES[cpu.to_s]
       raise "cpu must be #{CPU_FAMILIES.keys.join 'or'}!"
       
-      log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores"
+      log "Create server '#{server_name}': #{ram_in_gb} GB - #{cores} Cores (#{cpu})"
       
       server = dc.create_server :cores => cores, :ram => ram, :name => server_name,
         :cpuFamily => cpu
