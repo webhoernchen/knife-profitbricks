@@ -36,6 +36,7 @@ module KnifeProfitbricks
           Chef::Knife.load_deps
           
           Chef::Config[:solo] = true
+          Chef::Config[:solo_legacy_mode] = true
         end
 
         option :profitbricks_data_bag,
@@ -69,8 +70,12 @@ module KnifeProfitbricks
         config.password = password
         config.global_classes = false
         config.timeout = 300
+        
+        if config.path_prefix == '/rest/v2'
+          config.path_prefix = '/cloudapi/v3/'
+        end
       end
-      
+
       log "Established ..."
       log "\n"
     end
