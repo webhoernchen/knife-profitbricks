@@ -10,9 +10,14 @@ module KnifeProfitbricks
       cores = server_config['cores']
       
       cpu = server_config['cpu']
-      cpu ||= 'amd'
-      cpu = CPU_FAMILIES[cpu.to_s]
-      raise "cpu must be #{CPU_FAMILIES.keys.join 'or'}!"
+      cpu ||= self.class::CPU_DEFAULT_KEY
+      cpu = cpu.to_sym
+      
+      if self.class::CPU_FAMILIES.has_key? cpu
+        cpu = self.class::CPU_FAMILIES[cpu]
+      else
+        raise "cpu must be #{self.class::CPU_FAMILIES.keys.join ' or '}!"
+      end
 
       log "Check LVS state #{server_name}"
       if server.lvs_support_complete?

@@ -14,6 +14,8 @@ module KnifeProfitbricks
       :intel => 'INTEL_XEON'
     }
 
+    CPU_DEFAULT_KEY = :amd
+
     private
     def _profitbricks_config
       n = Chef::Config[:knife][:chef_node_name]
