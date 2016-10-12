@@ -5,22 +5,31 @@ module KnifeProfitbricks
     include KnifeProfitbricks::Base
 
     banner "knife profitbricks server list OPTIONS"
+    
+    option :no_traffic,
+      :short => "-nt",
+      :long => "--no-traffic",
+      :description => "No traffic data will be displayed",
+      :proc => lambda {|o| Chef::Config[:knife][:display_traffic] = false },
+      :default => false
 
     def run
       ProfitBricks::Datacenter.list_sorted.each do |dc|
         log "DC: #{dc.name}"
         log " * Location: #{dc.location_label}"
-       
-        dc.last_3_traffic_periods.each do |period, traffic_rows|
-          log ""
-         
-          log " * Traffic period: #{period}"
-          traffic_rows.each do |row|
-            log "   * #{row.in_or_out}: #{row.megabytes} MB"
+      
+        if display_traffic?
+          dc.last_3_traffic_periods.each do |period, traffic_rows|
+            log ""
+           
+            log " * Traffic period: #{period}"
+            traffic_rows.each do |row|
+              log "   * #{row.in_or_out}: #{row.megabytes} MB"
+            end
           end
-        end
 
-        log ""
+          log ""
+        end
 
         dc.servers.each do |server|
           log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM)"
@@ -56,6 +65,11 @@ module KnifeProfitbricks
     end
 
     private
+    def display_traffic?
+      o = Chef::Config[:knife][:display_traffic]
+      o.nil? || o
+    end
+
     def volumes_info_for_server(server)
       log "   * Volumes:"
       
