@@ -10,10 +10,21 @@ class ProfitBricks::Billing::TrafficTable
 
   def self.by_period(period)
     @periods ||= {}
-    @periods[period] ||= ProfitBricks::Billing.request(:method => :get,
+
+    if r = @periods[period]
+      r
+    else
+      body = ProfitBricks::Billing.request(:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
-      :expects => 200)['traffic']
+      :query => {:mac => true},
+      :expects => 200)
+#      p body
+      body['traffic']
+    end
   rescue Excon::Errors::NotFound
+    []
+  rescue Exception => e
+    p "Traffic for period '#{period}' can not be displayed: #{e.class} - #{e.to_s}"
     []
   end
 
@@ -40,7 +51,7 @@ class ProfitBricks::Billing::TrafficDay
 end
 
 class ProfitBricks::Billing::TrafficRow
-  attr_accessor :in_or_out, :dc_id, :dc_name, :days, :period
+  attr_accessor :in_or_out, :dc_id, :dc_name, :days, :period, :mac
 
   def self.by_current_period
     by_period default_period
@@ -76,6 +87,8 @@ class ProfitBricks::Billing::TrafficRow
         day.number_of_day = number_of_day
         day.bytes = line[index]
 #        day.bytes = 0 unless day.bytes
+      when /^MAC$/i
+        self.mac = line[index]
       end
     end
   end
