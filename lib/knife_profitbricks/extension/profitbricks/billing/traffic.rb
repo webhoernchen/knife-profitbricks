@@ -16,7 +16,7 @@ class ProfitBricks::Billing::TrafficTable
     else
       body = ProfitBricks::Billing.request(:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
-      :query => {:mac => true},
+#      :query => {:mac => true},
       :expects => 200)
 #      p body
       body['traffic']
