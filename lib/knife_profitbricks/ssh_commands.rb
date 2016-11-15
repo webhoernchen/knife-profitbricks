@@ -19,7 +19,7 @@ module KnifeProfitbricks
     
     private
     def server_available_by_ssh?
-      10.times.detect do 
+      25.times.detect do 
         result = ssh_test
         sleep(5) unless result
         result
