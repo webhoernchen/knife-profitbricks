@@ -4,7 +4,7 @@ module KnifeProfitbricks
       module NIC
         def self.included(base)
           base.class_eval do
-            property_reader :ips, :firewallActive
+            property_reader :ips, :firewallActive, :mac
             
             alias firewall_rules fwrules
             alias firewall_active? firewall_active
@@ -13,6 +13,14 @@ module KnifeProfitbricks
 
         def lan_id
           read_property :lan
+        end
+
+        def last_3_traffic_periods
+          @last_3_traffic_periods ||= ProfitBricks::Billing::TrafficRow.by_last_4_periods_and_mac(mac).flatten.inject({}) do |sum, row|
+            sum[row.period] ||= []
+            sum[row.period] << row
+            sum
+          end
         end
       end
     end

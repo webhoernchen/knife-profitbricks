@@ -99,6 +99,18 @@ module KnifeProfitbricks
         reserved_hash[ip] = "DC: #{dc.name} => Server: #{server.name}"
         
         log "   * IP: #{ip}#{reserved_info}"
+        if display_traffic?
+          server.nics.first.last_3_traffic_periods.each do |period, traffic_rows|
+            log ""
+           
+            log " * Traffic period: #{period}"
+            traffic_rows.each do |row|
+              log "   * #{row.in_or_out}: #{row.megabytes} MB"
+            end
+          end
+
+          log ""
+        end
       else
         log "   * IPs:"
         ips.each do |ip|

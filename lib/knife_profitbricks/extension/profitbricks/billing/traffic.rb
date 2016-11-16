@@ -16,7 +16,7 @@ class ProfitBricks::Billing::TrafficTable
     else
       body = ProfitBricks::Billing.request(:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
-#      :query => {:mac => true},
+      :query => {:mac => true},
       :expects => 200)
 #      p body
       body['traffic']
@@ -65,6 +65,13 @@ class ProfitBricks::Billing::TrafficRow
     (0..4).collect do |n|
       period = period_for n.months.ago
       by_period_and_dc_id period, dc_id
+    end
+  end
+
+  def self.by_last_4_periods_and_mac(mac)
+    (0..4).collect do |n|
+      period = period_for n.months.ago
+      by_period_and_mac period, mac
     end
   end
 
@@ -118,6 +125,12 @@ class ProfitBricks::Billing::TrafficRow
   def self.by_period_and_dc_id(period, dc_id)
     by_period(period).select do |traffic|
       traffic.dc_id == dc_id
+    end
+  end
+  
+  def self.by_period_and_mac(period, mac)
+    by_period(period).select do |traffic|
+      traffic.mac == mac
     end
   end
 
