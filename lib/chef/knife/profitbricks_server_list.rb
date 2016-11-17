@@ -7,7 +7,6 @@ module KnifeProfitbricks
     banner "knife profitbricks server list OPTIONS"
     
     option :no_traffic,
-      :short => "-nt",
       :long => "--no-traffic",
       :description => "No traffic data will be displayed",
       :proc => lambda {|o| Chef::Config[:knife][:display_traffic] = false },
