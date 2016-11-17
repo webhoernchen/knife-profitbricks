@@ -19,15 +19,7 @@ module KnifeProfitbricks
         log " * Location: #{dc.location_label}"
       
         if display_traffic?
-          dc.last_3_traffic_periods.each do |period, traffic_rows|
-            log ""
-           
-            log " * Traffic period: #{period}"
-            traffic_rows.each do |row|
-              log "   * #{row.in_or_out}: #{row.megabytes} MB"
-            end
-          end
-
+          list_traffic_for dc
           log ""
         end
 
@@ -91,44 +83,44 @@ module KnifeProfitbricks
     end
 
     def ips_for_server(server, dc)
-      ips = server.ips
-      
-      if ips.count == 1
-        ip = ips.first
-        reserved_info = reserved_info_for_ip ip
-        reserved_hash[ip] = "DC: #{dc.name} => Server: #{server.name}"
-        
-        log "   * IP: #{ip}#{reserved_info}"
-        if display_traffic?
-          server.nics.first.last_3_traffic_periods.each do |period, traffic_rows|
-            log ""
-           
-            log " * Traffic period: #{period}"
-            traffic_rows.each do |row|
-              log "   * #{row.in_or_out}: #{row.megabytes} MB"
-            end
-          end
+      server.nics.each_with_index do |nic, index|
+        log "   * Nic #{nic.name || index.next}:"
+        log "     * Mac: #{nic.mac}"
 
-          log ""
-        end
-      else
-        log "   * IPs:"
-        ips.each do |ip|
+        ips = nic.ips.collect do |ip|
           reserved_info = reserved_info_for_ip ip
           reserved_hash[ip] = "DC: #{dc.name} => Server: #{server.name}"
-          
-          log "     * #{ip}#{reserved_info}"
+          "#{ip}#{reserved_info}"
+        end.join(', ')
+        log "     * IPs: #{ips}"
+        
+        if display_traffic?
+          list_traffic_for nic, '     '
         end
       end
     end
 
     def reserved_info_for_ip(ip)
-      fixed = ProfitBricks::IPBlock.ips.include?(ip)
+      fixed = ProfitBricks::IPBlock.ips.include? ip
       fixed ? ' (reserved)' : ''
     end
 
     def reserved_hash
       @reserved_hash ||= {}
+    end
+
+    def list_traffic_for(dc_or_nic, space=' ')
+      dc_or_nic.last_3_traffic_periods.each do |period, traffic_rows|
+        traffic =  traffic_rows.inject({}) do |sum, traffic_row|
+          sum[traffic_row.in_or_out] ||= 0
+          sum[traffic_row.in_or_out] += traffic_row.megabytes
+          sum
+        end.collect do |in_or_out, sum_in_megabytes|
+          "#{in_or_out}: #{sum_in_megabytes} MB"
+        end.join(', ')
+        
+        log "#{space}* Traffic period: #{period} (#{traffic})"
+      end
     end
   end
 end
