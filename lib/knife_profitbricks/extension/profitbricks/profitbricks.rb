@@ -20,6 +20,14 @@ module KnifeProfitbricks
 
           response
         end
+
+        def last_3_traffic_periods
+          @last_3_traffic_periods ||= ProfitBricks::Billing::TrafficRow.by_last_4_periods.flatten.inject({}) do |sum, row|
+            sum[row.period] ||= []
+            sum[row.period] << row
+            sum
+          end
+        end
       end
     end
   end

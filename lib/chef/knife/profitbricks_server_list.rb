@@ -53,6 +53,12 @@ module KnifeProfitbricks
           log ''
         end
       end
+      
+      if display_traffic?
+        log ''
+        log 'Traffic summary:'
+        list_traffic_for ProfitBricks
+      end
     end
 
     private
