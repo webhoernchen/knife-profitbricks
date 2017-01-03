@@ -75,6 +75,12 @@ class ProfitBricks::Billing::TrafficRow
     end
   end
 
+  def self.by_last_4_periods
+    (0..4).collect do |n|
+      by_period_for_date n.months.ago
+    end
+  end
+
   def initialize(meta_line, line)
     line = line.split(',')
 
