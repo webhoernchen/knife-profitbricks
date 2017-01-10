@@ -23,7 +23,7 @@ module KnifeProfitbricks
         end
 
         dc.servers.each do |server|
-          log " * Server: #{server.name} (#{server.cores} cores; #{server.ram} MB RAM)"
+          log " * Server: #{server.name} (#{server.cores} cores - #{server.cpu_family}; #{server.ram} MB RAM)"
           log "   * Allocation state: #{server.allocation_state}"
           log "   * State: #{server.vm_state}"
           log "   * OS: #{server.licence_type}"
