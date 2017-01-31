@@ -78,6 +78,8 @@ Add the following profitbricks config to your node:
     "server": {
       "name": "name_of_the_server",
       "cores": 1,
+      "cpu": "amd",
+      // or "intel"; Default is "amd"
       "ram_in_gb": 1,
       "reserve_ip": BOOLEAN,
       "volumes": {
