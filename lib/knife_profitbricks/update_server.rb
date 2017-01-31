@@ -32,8 +32,19 @@ module KnifeProfitbricks
 
         log "LVS config updated"
       end
+
+      if server.cpu_family != cpu || server.ram > ram || server.cores > cores
+        log ''
+        log " * shutdown for changing cpu family #{server.cpu_family} => #{cpu}" if server.cpu_family != cpu
+        log " * shutdown for downgrade ram #{server.ram} GB => #{ram}" if server.ram > ram
+        log " * shutdown for downgrade cores #{server.cores} => #{cores}" if server.cores > cores
+        shutdown_server
+        
+        server.update :cores => cores, :ram => ram, :cpuFamily => cpu, :allowReboot => true
+        server.wait_for { ready? }
+      end
       
-      if server.ram != ram || server.cores != cores || server.cpu_family != cpu
+      if server.ram != ram || server.cores != cores
         server.update :cores => cores, :ram => ram, :cpuFamily => cpu
         server.wait_for { ready? }
       end
