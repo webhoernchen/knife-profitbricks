@@ -22,6 +22,7 @@ module KnifeProfitbricks
       chef.config[:ssh_user] = Chef::Config[:knife][:ssh_user]
       chef.config[:host_key_verify] = false
       chef.config[:chef_node_name] = Chef::Config[:knife][:chef_node_name]
+      chef.config[:forward_agent] = Chef::Config[:knife][:forward_agent]
       #chef.config[:use_sudo] = true unless bootstrap.config[:ssh_user] == 'root'
       chef.config[:sudo_command] = "echo #{Shellwords.escape(user_password)} | sudo -ES" if @server_is_new
       chef.config[:ssh_control_master] = 'no'

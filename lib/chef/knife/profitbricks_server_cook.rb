@@ -61,6 +61,14 @@ module KnifeProfitbricks
       :description => "The Chef node name for your new server node",
       :proc => Proc.new { |o| Chef::Config[:knife][:chef_node_name] = o }
 
+    option :forward_agent,
+      :short => '-A',
+      :long        => '--forward-agent',
+      :description => 'Forward SSH authentication. Adds -E to sudo, override with --sudo-command.',
+      :boolean     => true,
+      :default     => false,
+      :proc => Proc.new { |o| Chef::Config[:knife][:forward_agent] = o }
+
     def run
       error Chef::Config[:deprecated_error] if Chef::Config[:deprecated_error]
 
