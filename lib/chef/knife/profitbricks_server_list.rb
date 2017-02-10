@@ -116,12 +116,15 @@ module KnifeProfitbricks
 
     def list_traffic_for(dc_or_nic, space=' ')
       dc_or_nic.last_3_traffic_periods.each do |period, traffic_rows|
-        traffic =  traffic_rows.inject({}) do |sum, traffic_row|
+        traffic = traffic_rows.inject({}) do |sum, traffic_row|
           sum[traffic_row.in_or_out] ||= 0
           sum[traffic_row.in_or_out] += traffic_row.gigabytes
           sum
         end.collect do |in_or_out, sum_for_row|
-          "#{in_or_out}: #{sum_for_row.round 2} GB"
+          v = sum_for_row.round 2
+          v = "%.2f" % v
+          v = "%8s" % v
+          "#{in_or_out}: #{v} GB"
         end.join(', ')
         
         log "#{space}* Traffic period: #{period} (#{traffic})"
