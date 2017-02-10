@@ -31,32 +31,50 @@ knife profitbricks server list
 Example:
 
  * DC: Data center 1
-  * Server: Server name 1 (2 cores; 2048 MB RAM)
+  * Location: de/fkb => karlsruhe
+   * Traffic period: 2017.01 (In: 1.54 GB, Out: 0.35 GB)
+   * Traffic period: 2016.12 (In: 1.04 GB, Out: 0.85 GB)
+   * Traffic period: 2016.11 (In: 1.31 GB, Out: 0.95 GB)
+
+  * Server: Server name 1 (2 cores - (AMD_OPTERON|INTEL_XEON); 2048 MB RAM)
    * Allocation state: (Dea|A)llocated
    * State: RUNNING/SHUTOFF
    * OS: LINUX
-   * IP: 0.0.0.0 (reserved)
+   * Nic 1:
+    * Mac: ff:ff:ff:ff:ff:ff
+    * IPs: 0.0.0.0 (reserved)
+     * Traffic period: 2017.01 (In: 0.53 GB, Out: 0.15 GB)
+     * Traffic period: 2016.12 (In: 0.03 GB, Out: 0.25 GB)
+     * Traffic period: 2016.11 (In: 0.30 GB, Out: 0.35 GB)
    * Volumes:
     * Volume name 1 (5 GB)
     * Volume name 2 (10 GB)
    * LVS: complete
-  * Server: Server name 2 (2 cores; 2048 MB RAM)
+  * Server: Server name 2 (2 cores - (AMD_OPTERON|INTEL_XEON); 2048 MB RAM)
    * Allocation state: (Dea|A)llocated
    * State: RUNNING/SHUTOFF
    * OS: LINUX
-   * IPs:
-    * 0.0.0.0 (reserved)
-    * 0.0.0.1
+   * Nic 1:
+    * Mac: ff:ff:ff:ff:ff:ff
+    * IPs: 0.0.0.0 (reserved), 0.0.0.1
+     * Traffic period: 2017.01 (In: 1.0 GB, Out: 0.15 GB)
+     * Traffic period: 2016.12 (In: 1.0 GB, Out: 0.25 GB)
+     * Traffic period: 2016.11 (In: 1.0 GB, Out: 0.35 GB)
    * Volumes:
     * Volume name 1 (5 GB)
     * Volume name 2 (10 GB)
    * LVS: complete
  * DC: Data center 2
-  * Server: Server name 3 (2 cores; 2048 MB RAM)
+  * Server: Server name 3 (2 cores - (AMD_OPTERON|INTEL_XEON); 2048 MB RAM)
    * Allocation state: (Dea|A)llocated
    * State: RUNNING/SHUTOFF
    * OS: LINUX
-   * IP: 0.0.0.0 (reserved)
+   * Nic 1:
+    * Mac: ff:ff:ff:ff:ff:ff
+    * IPs: 0.0.0.0 (reserved)
+     * Traffic period: 2017.01 (In: 0.01 GB, Out: 0.05 GB)
+     * Traffic period: 2016.12 (In: 0.01 GB, Out: 0.35 GB)
+     * Traffic period: 2016.11 (In: 0.01 GB, Out: 0.45 GB)
    * Volumes:
     * Volume name 1 (5 GB)
     * Volume name 2 (10 GB)
