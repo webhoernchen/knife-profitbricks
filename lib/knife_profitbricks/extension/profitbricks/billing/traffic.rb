@@ -42,11 +42,11 @@ class ProfitBricks::Billing::TrafficDay
   attr_accessor :number_of_day, :bytes
 
   def megabytes
-   (bytes.to_i / 1.megabyte).round(2) if bytes
+   bytes.to_i.to_f / 1.megabyte if bytes
   end
 
   def gigabytes
-   (bytes.to_i / 1.gigabytes).round(2) if bytes
+   bytes.to_i.to_f / 1.gigabyte if bytes
   end
 end
 
@@ -108,6 +108,10 @@ class ProfitBricks::Billing::TrafficRow
 
   def megabytes
     days.values.collect(&:megabytes).compact.sum
+  end
+
+  def gigabytes
+    days.values.collect(&:gigabytes).compact.sum
   end
 
   private

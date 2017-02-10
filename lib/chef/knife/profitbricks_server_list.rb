@@ -118,10 +118,10 @@ module KnifeProfitbricks
       dc_or_nic.last_3_traffic_periods.each do |period, traffic_rows|
         traffic =  traffic_rows.inject({}) do |sum, traffic_row|
           sum[traffic_row.in_or_out] ||= 0
-          sum[traffic_row.in_or_out] += traffic_row.megabytes
+          sum[traffic_row.in_or_out] += traffic_row.gigabytes
           sum
-        end.collect do |in_or_out, sum_in_megabytes|
-          "#{in_or_out}: #{sum_in_megabytes} MB"
+        end.collect do |in_or_out, sum_for_row|
+          "#{in_or_out}: #{sum_for_row.round 2} GB"
         end.join(', ')
         
         log "#{space}* Traffic period: #{period} (#{traffic})"
