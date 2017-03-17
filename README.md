@@ -104,7 +104,10 @@ Add the following profitbricks config to your node:
         // Name of the volume and size in GB; Root is the boot volume
         "root": 10, 
         "volume_name_2": 10
-      }
+      },
+      // "image": "/regexp/"
+      // "image": "IMAGE_NAME"
+      "image": "REGEXP_OR_IMAGE_NAME"
     }
   }
 ```

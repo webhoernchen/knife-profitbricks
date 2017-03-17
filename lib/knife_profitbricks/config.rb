@@ -57,15 +57,27 @@ module KnifeProfitbricks
     end
 
     def boot_image_name
-      @image_name ||= Chef::Config[:knife][:profitbricks_image]
+      @image_name ||= if image = server_config['image']
+        if m = image.match(/^\/(.*)\/$/)
+          Regexp.new m[1]
+        else
+          image
+        end
+      else
+        Chef::Config[:knife][:profitbricks_image]
+      end
     end
 
     def boot_image
-      @image ||= ProfitBricks::Image.list.find do |i|
+      @image ||= detect_boot_image
+    end
+
+    def detect_boot_image
+      ProfitBricks::Image.list.find do |i|
         i.location == dc_region &&
           (boot_image_name.is_a?(Regexp) && i.name.match(boot_image_name) ||
           i.name == boot_image_name)
-      end
+      end || raise("No boot image found for #{boot_image_name.inspect}")
     end
       
     def root_password(reset=false)
