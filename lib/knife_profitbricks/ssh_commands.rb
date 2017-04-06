@@ -19,8 +19,9 @@ module KnifeProfitbricks
     
     private
     def server_available_by_ssh?
-      35.times.detect do 
-        result = ssh_test
+      max_retries = 35
+      max_retries.times.detect do |n|
+        result = ssh_test :time => n, :retries => max_retries
         sleep 5 unless result
         result
       end
@@ -111,7 +112,7 @@ module KnifeProfitbricks
       end
     end
 
-    def ssh_test
+    def ssh_test(options={})
       begin
         custom_timeout 5 do
           s = TCPSocket.new server_ip, 22
@@ -119,7 +120,8 @@ module KnifeProfitbricks
           true
         end
       rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect, Net::SSH::ConnectionTimeout => e
-        log "#{e.class} - #{server_ip} - #{Time.now.to_s}"
+        info = options.empty? ? nil : " - #{options[:time]} / #{options[:retries]}"
+        log '  * ' + [e.class, server_ip, Time.now.to_s, info].compact.collect(&:to_s).join(' - ')
         false
       end
     end
