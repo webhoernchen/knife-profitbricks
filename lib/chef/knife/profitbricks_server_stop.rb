@@ -16,7 +16,7 @@ module KnifeProfitbricks
       require 'net/ssh'
       require 'net/ssh/multi'
       
-      require 'chef/mixin/command'
+#      require 'chef/mixin/command'
       require 'chef/json_compat'
       
       require 'timeout'
