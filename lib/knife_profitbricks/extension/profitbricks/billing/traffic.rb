@@ -9,18 +9,13 @@ require 'active_support/core_ext/enumerable'
 class ProfitBricks::Billing::TrafficTable
 
   def self.by_period(period)
-    @periods ||= {}
-
-    if r = @periods[period]
-      r
-    else
-      body = ProfitBricks::Billing.request(:method => :get,
+    params = {:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
       :query => {:mac => true},
-      :expects => 200)
+      :expects => 200}
+    body = ProfitBricks::Billing.request params
 #      p body
-      body['traffic']
-    end
+    body['traffic']
   rescue Excon::Errors::NotFound
     []
   rescue Exception => e
