@@ -71,10 +71,11 @@ module KnifeProfitbricks
         config.password = password
         config.global_classes = false
         config.timeout = 300
+       
+        is_v3 = config.path_prefix == 'cloudapi/v3' || 
+          config.path_prefix.split('/').map(&:downcase).include?('v3')
         
-        if config.path_prefix == '/rest/v2'
-          config.path_prefix = '/cloudapi/v3/'
-        end
+        config.path_prefix = 'cloudapi/v4' if is_v3
       end
 
       log "Established ..."
