@@ -40,7 +40,8 @@ module ProfitBricks::Billing
       :password => ProfitBricks::Config.password,
       :debug => ProfitBricks::Config.debug,
       :omit_default_port => true,
-      :query => { :depth => 1 }
+      :query => { :depth => ProfitBricks::Config.depth },
+      :family => ::Socket::PF_INET # only works with IPv4 at the moment
     }
 
     Excon.new(url, params)
