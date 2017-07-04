@@ -21,7 +21,7 @@ module KnifeProfitbricks
     def server_available_by_ssh?
       max_retries = 10
       max_retries.times.detect do |n|
-        result = ssh_test :time => n, :retries => max_retries
+        result = ssh_test :time => n.next, :retries => max_retries
         sleep 5 unless result
         result
       end
@@ -46,7 +46,7 @@ module KnifeProfitbricks
         error "Can not start server!"
       end
     rescue Exception => e
-      p e.message
+#      p e.message
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
@@ -152,7 +152,7 @@ module KnifeProfitbricks
     def loginable_by_ssh?
       max_retries = 5
       max_retries.times.collect do |n|
-        result = _loginable_by_ssh? :time => n, :retries => max_retries
+        result = _loginable_by_ssh? :time => n.next, :retries => max_retries
         sleep 5 unless result
         result
       end.last
