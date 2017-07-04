@@ -151,11 +151,11 @@ module KnifeProfitbricks
 
     def loginable_by_ssh?
       max_retries = 5
-      max_retries.times.detect do |n|
+      max_retries.times.collect do |n|
         result = _loginable_by_ssh? :time => n, :retries => max_retries
         sleep 5 unless result
         result
-      end
+      end.last
     end
 
     def _loginable_by_ssh?(options={})
