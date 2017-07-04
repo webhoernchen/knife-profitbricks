@@ -19,7 +19,7 @@ module KnifeProfitbricks
     
     private
     def server_available_by_ssh?
-      max_retries = 35
+      max_retries = 10
       max_retries.times.detect do |n|
         result = ssh_test :time => n, :retries => max_retries
         sleep 5 unless result
@@ -39,11 +39,34 @@ module KnifeProfitbricks
         server.wait_for { reload; run? }
       end
 
-      if server.run? && server_available_by_ssh?
+      if server.run? && server_available_by_ssh? && loginable_by_ssh?
         log "Server is running."
         log ''
       else
         error "Can not start server!"
+      end
+    rescue Exception => e
+      p e.message
+      @check_server_state_retries ||= 0
+      @check_server_state_retries += 1
+
+      if @check_server_state_retries > 4
+        raise e
+      else
+        config = Chef::Config[:knife]
+        old_value = config[:force_shutdown]
+        config[:force_shutdown] = true
+
+        log ''
+        shutdown_server
+        log ''
+        stop_server
+        log ''
+
+        config[:force_shutdown] = old_value
+        log "Retry (#{@check_server_state_retries}) ..."
+        reset_server_ip
+        retry
       end
     end
       
@@ -120,7 +143,35 @@ module KnifeProfitbricks
           true
         end
       rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect, Net::SSH::ConnectionTimeout => e
-        info = options.empty? ? nil : " - #{options[:time]} / #{options[:retries]}"
+        info = options.empty? ? nil : "#{options[:time]} / #{options[:retries]}"
+        log '  * ' + [e.class, server_ip, Time.now.to_s, info].compact.collect(&:to_s).join(' - ')
+        false
+      end
+    end
+
+    def loginable_by_ssh?
+      max_retries = 5
+      max_retries.times.detect do |n|
+        result = _loginable_by_ssh? :time => n, :retries => max_retries
+        sleep 5 unless result
+        result
+      end
+    end
+
+    def _loginable_by_ssh?(options={})
+      begin
+        custom_timeout 10 do
+          command = 'date > /dev/null'
+          if @server_is_new
+            ssh_root command
+          else
+            ssh_user command
+          end.run
+        end
+
+        true
+      rescue Exception => e
+        info = options.empty? ? nil : "#{options[:time]} / #{options[:retries]}"
         log '  * ' + [e.class, server_ip, Time.now.to_s, info].compact.collect(&:to_s).join(' - ')
         false
       end
