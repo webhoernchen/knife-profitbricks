@@ -50,7 +50,7 @@ module KnifeProfitbricks
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
-      if @check_server_state_retries > 4
+      if @check_server_state_retries > 10
         raise e
       else
         config = Chef::Config[:knife]
@@ -66,6 +66,7 @@ module KnifeProfitbricks
         config[:force_shutdown] = old_value
         log "Retry (#{@check_server_state_retries}) ..."
         reset_server_ip
+        sleep 10
         retry
       end
     end
