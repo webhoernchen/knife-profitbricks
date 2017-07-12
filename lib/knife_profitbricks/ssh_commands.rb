@@ -14,6 +14,11 @@ module KnifeProfitbricks
           :long => "--user SSH-USER",
           :description => "SSH user for provisioning",
           :proc => lambda { |o| Chef::Config[:knife][:ssh_user] = o }
+        
+        option :no_retry_for_server,
+          :long => "--no-retry",
+          :description => "No retry to start server after failure",
+          :proc => lambda { |o| Chef::Config[:knife][:profitbricks_no_retry] = true }
       end
     end
     
@@ -50,7 +55,7 @@ module KnifeProfitbricks
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
-      if @check_server_state_retries > 10
+      if @check_server_state_retries > 10 || Chef::Config[:knife][:profitbricks_no_retry]
         raise e
       else
         config = Chef::Config[:knife]
