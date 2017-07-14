@@ -8,7 +8,9 @@ module KnifeProfitbricks
         log 'Shutdown server'
 
         if ssh_test
-          ssh('sudo shutdown -h now').run
+          custom_timeout 10 do
+            ssh('sudo shutdown -h now').run
+          end
           
           server.wait_for { reload; shutoff? }
           
