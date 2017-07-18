@@ -68,25 +68,6 @@ module KnifeProfitbricks
         stop_server
         log ''
         
-        log 'Remove lan from nic'
-        threads = server.nics.collect do |nic|
-          Thread.new do
-            nic.update :lan => nil
-            nic.wait_for { ready? }
-          end
-        end
-        threads.each(&:join)
-        
-        log 'Add lan to nic'
-        lan = public_lan
-        threads = server.nics.collect do |nic|
-          Thread.new do
-            nic.update :lan => lan
-            nic.wait_for { ready? }
-          end
-        end
-        threads.each(&:join)
-
         config[:force_shutdown] = old_value
         reset_server_ip
         sleep 10
