@@ -55,7 +55,7 @@ module KnifeProfitbricks
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
-      if @check_server_state_retries > 10 || Chef::Config[:knife][:profitbricks_no_retry]
+      if @check_server_state_retries > 5 || Chef::Config[:knife][:profitbricks_no_retry]
         raise e
       else
         config = Chef::Config[:knife]
