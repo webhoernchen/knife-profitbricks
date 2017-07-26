@@ -70,6 +70,22 @@ module KnifeProfitbricks
         
         config[:force_shutdown] = old_value
         reset_server_ip
+  
+        unless reserve_ip?
+          log 'Recreate nics ...'
+          lan_ids = server.nics.collect(&:lan_id)
+          lan_ids.each do |lan_id|
+            options = {:firewallActive => false, :lan => lan_id}
+            nic = server.create_nic options 
+            nic.wait_for { ready? }
+          end
+
+          server.reload
+          server.wait_for { ready? }
+          log 'Recreate nics finised!'
+          log ''
+        end
+
         sleep 10
 
         log "Retry (#{@check_server_state_retries}) ..."
