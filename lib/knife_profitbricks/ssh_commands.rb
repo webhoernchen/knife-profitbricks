@@ -74,6 +74,11 @@ module KnifeProfitbricks
         unless reserve_ip?
           log 'Recreate nics ...'
           lan_ids = server.nics.collect(&:lan_id)
+          server.nics.each(&:delete)
+          
+          server.reload
+          server.wait_for { ready? }
+
           lan_ids.each do |lan_id|
             options = {:firewallActive => false, :lan => lan_id}
             nic = server.create_nic options 
