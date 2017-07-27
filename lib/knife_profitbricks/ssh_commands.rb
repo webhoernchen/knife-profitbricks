@@ -55,7 +55,7 @@ module KnifeProfitbricks
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
-      if @check_server_state_retries > 5 || Chef::Config[:knife][:profitbricks_no_retry]
+      if @check_server_state_retries > 1 || Chef::Config[:knife][:profitbricks_no_retry]
         raise e
       else
         config = Chef::Config[:knife]
@@ -73,8 +73,12 @@ module KnifeProfitbricks
   
         unless reserve_ip?
           log 'Recreate nics ...'
-          lan_ids = server.nics.collect(&:lan_id)
-          server.nics.each(&:delete)
+          nics = server.nics
+          lan_ids = nics.collect(&:lan_id)
+          nics.each do |n|
+            n.delete
+            n.wait_for { ready? }
+          end
           
           server.reload
           server.wait_for { ready? }
@@ -84,6 +88,8 @@ module KnifeProfitbricks
             nic = server.create_nic options 
             nic.wait_for { ready? }
           end
+          nsize = server.nics.size
+          error "Recreate nics failed!" if nsize != 1
 
           server.reload
           server.wait_for { ready? }
