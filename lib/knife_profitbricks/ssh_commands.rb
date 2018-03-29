@@ -149,7 +149,7 @@ module KnifeProfitbricks
     def upload_ssh_key
       ssh_user = Chef::Config[:knife][:ssh_user]
       dot_ssh_path = if ssh_user != 'root'
-        ssh_root("useradd #{ssh_user} -G sudo -m -s /bin/bash").run
+        ssh_root("[[ -z $(cat /etc/passwd | awk -F: '{print $1}' | grep -E '^#{ssh_user}$') ]] && useradd #{ssh_user} -G sudo -m -s /bin/bash").run
         "/home/#{ssh_user}/.ssh"
       else
         "/root/.ssh"
