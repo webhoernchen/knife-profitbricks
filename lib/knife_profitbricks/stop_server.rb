@@ -2,16 +2,29 @@ module KnifeProfitbricks
   module StopServer
 
     private
+    def do_shutdown_server
+      ssh('sudo shutdown -h now').run
+    rescue IOError => e
+      if e.to_s == 'closed stream'
+        true
+      else
+        raise e
+      end
+    end
+
+    def shutdown_server_with_timeout
+      custom_timeout 10 do
+        do_shutdown_server
+      end
+    end
+
     def shutdown_server
       if server.running?
         log "Server is running."
         log 'Shutdown server'
 
         if ssh_test
-          custom_timeout 10 do
-            ssh('sudo shutdown -h now').run
-          end
-          
+          shutdown_server_with_timeout
           server.wait_for { reload; shutoff? }
           
           log ''
