@@ -73,11 +73,11 @@ module KnifeProfitbricks
     end
 
     def detect_boot_image
-      ProfitBricks::Image.list.find do |i|
+      ProfitBricks::Image.list.select do |i|
         i.location == dc_region &&
           (boot_image_name.is_a?(Regexp) && i.name.match(boot_image_name) ||
           i.name == boot_image_name)
-      end || raise("No boot image found for #{boot_image_name.inspect}")
+      end.sort_by(&:name).last || raise("No boot image found for #{boot_image_name.inspect}")
     end
       
     def root_password(reset=false)
