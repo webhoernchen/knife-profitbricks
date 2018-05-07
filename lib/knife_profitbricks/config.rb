@@ -17,11 +17,18 @@ module KnifeProfitbricks
     CPU_DEFAULT_KEY = :amd
 
     private
-    def _profitbricks_config
+    def _node_config
       n = Chef::Config[:knife][:chef_node_name]
       n = "nodes/#{n}.json"
-      n = JSON.parse(File.read n)
-      config = n['profitbricks']
+      JSON.parse File.read n
+    end
+
+    def node_config
+      @node_config || _node_config
+    end
+
+    def _profitbricks_config
+      config = node_config['profitbricks']
       log "No profitbricks config found! Please specify \"profitbricks\" in your node!" unless config
       config
     rescue Errno::ENOENT
