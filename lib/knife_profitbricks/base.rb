@@ -33,6 +33,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/wait_for'
           require 'knife_profitbricks/extension/profitbricks/billing'
           require 'knife_profitbricks/extension/profitbricks/billing/traffic'
+          require 'knife_profitbricks/extension/excon/socket'
           
           Chef::Knife.load_deps
           
