@@ -12,7 +12,7 @@ module KnifeProfitbricks
 
           begin
             super
-          rescue Excon::Error::Socket => e
+          rescue ::Excon::Error::Socket => e
             retry_count += 1
             if retry_count <= 5
               sleep 5
