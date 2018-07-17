@@ -5,6 +5,8 @@ module KnifeProfitbricks
   module Extension
     module Excon
       module Socket
+        MAX_RETRIES = 20
+        WAIT_AFTER_ERROR = 10 #seconds
         
         private
         def connect
@@ -14,8 +16,9 @@ module KnifeProfitbricks
             super
           rescue ::Excon::Error::Socket => e
             retry_count += 1
-            if retry_count <= 5
-              sleep 5
+            if retry_count <= MAX_RETRIES
+              print "#{e.class}: #{e.message}\nwait #{WAIT_AFTER_ERROR}s and retry #{retry_count} / #{MAX_RETRIES}\n"
+              sleep WAIT_AFTER_ERROR
               retry
             else
               raise e
