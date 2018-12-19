@@ -23,6 +23,11 @@ module KnifeProfitbricks
             else
               raise e
             end
+          rescue Exception => e
+            # Debug
+            p e
+            p e.class
+            raise e
           end
         end
       end
