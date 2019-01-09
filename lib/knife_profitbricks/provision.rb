@@ -62,7 +62,12 @@ module KnifeProfitbricks
 
         if installed_kernel != loaded_kernel
           log "Reboot server ..."
-          ssh('sudo reboot').run
+          
+          begin
+            ssh('sudo reboot').run
+          rescue IOError => e
+            raise e unless e.message == 'closed stream'
+          end
 
           sleep 30
 

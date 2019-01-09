@@ -177,7 +177,7 @@ module KnifeProfitbricks
           s.close
           true
         end
-      rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect, Net::SSH::ConnectionTimeout => e
+      rescue Timeout::Error, Errno::ECONNREFUSED, Net::SSH::Disconnect, Net::SSH::ConnectionTimeout, IOError => e
         info = options.empty? ? nil : "#{options[:time]} / #{options[:retries]}"
         log '  * ' + [e.class, server_ip, Time.now.to_s, info].compact.collect(&:to_s).join(' - ')
         false
