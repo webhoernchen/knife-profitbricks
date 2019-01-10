@@ -14,7 +14,7 @@ module KnifeProfitbricks
 
           begin
             super
-          rescue ::Excon::Error::Socket => e
+          rescue ::Excon::Error::Socket, ::SocketError => e
             retry_count += 1
             if retry_count <= MAX_RETRIES
               print "#{e.class}: #{e.message}\nwait #{WAIT_AFTER_ERROR}s and retry #{retry_count} / #{MAX_RETRIES}\n"
