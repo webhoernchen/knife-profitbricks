@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "profitbricks-sdk-ruby", ">= 1.1.0"
   s.add_runtime_dependency "knife-solo"
   s.add_runtime_dependency "knife-solo_data_bag"
-  s.add_runtime_dependency "activesupport", ">= 5.0.0", "< 5.3"
+  s.add_runtime_dependency "activesupport", ">= 6.0.0", "< 6.1"
 end
