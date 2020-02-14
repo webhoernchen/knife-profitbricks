@@ -15,7 +15,7 @@ module KnifeProfitbricks
           max_retry_count = 50
 
           response = begin
-            request_without_set_request_id_to_model options
+            request_without_set_request_id_to_model options.deep_dup
           rescue JSON::ParserError => e
             if e.message.match?(/Rate\s*Limit\s*Exceeded/i) && retry_count <= max_retry_count
               divider = "*" * 20 + "\n"
