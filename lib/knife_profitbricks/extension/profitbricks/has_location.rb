@@ -17,7 +17,7 @@ module KnifeProfitbricks
         end
 
         def location_label
-          location.label
+          location ? location.label : location_id
         end
       end
     end
