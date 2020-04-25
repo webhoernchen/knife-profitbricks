@@ -11,7 +11,7 @@ class ProfitBricks::Billing::TrafficTable
   def self.by_period(period)
     params = {:method => :get,
       :path => "/#{contract_id}/traffic/#{period}",
-      :query => {:mac => true},
+      :query => {:nic => true},
       :expects => 200}
     body = ProfitBricks::Billing.request params
 #      p body
@@ -37,16 +37,21 @@ class ProfitBricks::Billing::TrafficDay
   attr_accessor :number_of_day, :bytes
 
   def megabytes
-   bytes.to_i.to_f / 1.megabyte if bytes
+    gigabytes * 1.gigabyte / 1.megabyte
   end
 
   def gigabytes
-   bytes.to_i.to_f / 1.gigabyte if bytes
+    empty? ? 0.0 : bytes.to_f
+  end
+
+  private
+  def empty?
+    bytes.nil? || bytes.empty?
   end
 end
 
 class ProfitBricks::Billing::TrafficRow
-  attr_accessor :in_or_out, :dc_id, :dc_name, :days, :period, :mac
+  attr_accessor :in_or_out, :dc_id, :dc_name, :days, :period, :nic_id
 
   def self.by_current_period
     by_period default_period
@@ -56,22 +61,23 @@ class ProfitBricks::Billing::TrafficRow
     by_period period_for date
   end
 
+  LAST_4_PERIODS = 0..4
   def self.by_last_4_periods_and_dc_id(dc_id)
-    (0..4).collect do |n|
+    LAST_4_PERIODS.collect do |n|
       period = period_for n.months.ago
       by_period_and_dc_id period, dc_id
     end
   end
 
-  def self.by_last_4_periods_and_mac(mac)
-    (0..4).collect do |n|
+  def self.by_last_4_periods_and_nic_id(nic_id)
+    LAST_4_PERIODS.collect do |n|
       period = period_for n.months.ago
-      by_period_and_mac period, mac
+      by_period_and_nic_id period, nic_id
     end
   end
 
   def self.by_last_4_periods
-    (0..4).collect do |n|
+    LAST_4_PERIODS.collect do |n|
       by_period_for_date n.months.ago
     end
   end
@@ -95,8 +101,8 @@ class ProfitBricks::Billing::TrafficRow
         day.number_of_day = number_of_day
         day.bytes = line[index]
 #        day.bytes = 0 unless day.bytes
-      when /^MAC$/i
-        self.mac = line[index]
+      when /^NIC$/i
+        self.nic_id = line[index]
       end
     end
   end
@@ -133,9 +139,9 @@ class ProfitBricks::Billing::TrafficRow
     end
   end
   
-  def self.by_period_and_mac(period, mac)
+  def self.by_period_and_nic_id(period, nic_id)
     by_period(period).select do |traffic|
-      traffic.mac == mac
+      traffic.nic_id == nic_id
     end
   end
 

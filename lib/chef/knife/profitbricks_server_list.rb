@@ -115,7 +115,7 @@ module KnifeProfitbricks
     end
 
     def list_traffic_for(dc_or_nic, space=' ')
-      lines = dc_or_nic.last_3_traffic_periods.inject({}) do |sum, period_traffic_rows|
+      lines = dc_or_nic.last_4_traffic_periods.inject({}) do |sum, period_traffic_rows|
         period, traffic_rows = period_traffic_rows
 
         line = traffic_rows.inject({}) do |sum, traffic_row|

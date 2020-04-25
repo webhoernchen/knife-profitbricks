@@ -15,8 +15,8 @@ module KnifeProfitbricks
           read_property :lan
         end
 
-        def last_3_traffic_periods
-          @last_3_traffic_periods ||= ProfitBricks::Billing::TrafficRow.by_last_4_periods_and_mac(mac).flatten.inject({}) do |sum, row|
+        def last_4_traffic_periods
+          @last_4_traffic_periods ||= ProfitBricks::Billing::TrafficRow.by_last_4_periods_and_nic_id(id).flatten.inject({}) do |sum, row|
             sum[row.period] ||= []
             sum[row.period] << row
             sum
