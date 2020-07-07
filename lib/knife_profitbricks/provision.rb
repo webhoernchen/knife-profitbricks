@@ -3,13 +3,13 @@ module KnifeProfitbricks
 
     private
     def bootstrap_or_cook
-      command = "dpkg -l | grep chef | awk '{print $3}' | egrep -o '([0-9]+\\.)+[0-9]+'"
-      version = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{Chef::Config[:knife][:ssh_user]}@#{server_ip} "#{command}"`.strip
+      command = "dpkg -l | grep ' chef' | awk '{print $3}' | egrep -o '([0-9]+\\.)+[0-9]+'"
+      versions = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no #{Chef::Config[:knife][:ssh_user]}@#{server_ip} "#{command}"`.strip.split("\n").collect(&:strip)
 
-      log "Chef version on server '#{server_name}': #{version}"
+      log "Chef version on server '#{server_name}': #{versions.join(', ')}"
       log "Local chef version: #{Chef::VERSION}"
       
-      chef_klass = if version == Chef::VERSION
+      chef_klass = if !versions.empty? && versions.any? {|v| v >= Chef::VERSION }
         cook
       else
         bootstrap
