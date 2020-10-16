@@ -11,7 +11,9 @@ module KnifeProfitbricks
 
     CPU_FAMILIES = {
       :amd => 'AMD_OPTERON',
-      :intel => 'INTEL_XEON'
+      :intel => 'INTEL_XEON',
+      :intel_xeon => 'INTEL_XEON',
+      :intel_skylake => 'INTEL_SKYLAKE'
     }
 
     CPU_DEFAULT_KEY = :amd
