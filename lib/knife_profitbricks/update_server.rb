@@ -89,16 +89,20 @@ module KnifeProfitbricks
 
     def update_volumes
       threads = server_config['volumes'].collect do |hd_name, size_in_gb|
-        _thread_for_update_volume hd_name, size_in_gb
+        if size_in_gb.is_a? Hash
+          _thread_for_update_volume hd_name, size_in_gb['size']
+        else
+          _thread_for_update_volume hd_name, size_in_gb
+        end
       end
 
       threads.each(&:join)
       server.reload
     end
 
-    def _thread_for_update_volume(hd_name, size_in_gb)
+    def _thread_for_update_volume(*args)
       Thread.new do
-        _update_volume hd_name, size_in_gb
+        _update_volume(*args)
       end
     end
 

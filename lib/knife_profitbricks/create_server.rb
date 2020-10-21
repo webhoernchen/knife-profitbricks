@@ -8,23 +8,27 @@ module KnifeProfitbricks
       end
 
       threads = configured_volumes.collect do |hd_name, size_in_gb|
-        _thread_for_create_volume hd_name, size_in_gb
+        if size_in_gb.is_a? Hash
+          _thread_for_create_volume hd_name, size_in_gb['size'], size_in_gb['type']
+        else
+          _thread_for_create_volume hd_name, size_in_gb
+        end
       end
 
       threads.each(&:join)
       threads.collect(&:value)
     end
 
-    def _thread_for_create_volume(hd_name, size_in_gb)
+    def _thread_for_create_volume(*args)
       Thread.new do
-        _create_volume hd_name, size_in_gb
+        _create_volume(*args)
       end
     end
 
-    def _create_volume(hd_name, size_in_gb)
+    def _create_volume(hd_name, size_in_gb, type='HDD')
       name = "#{server_name}_#{hd_name}"
       log_message = "Create Volume '#{name}' size: #{size_in_gb} GB"
-      options = { :name => name, :size => size_in_gb, :type => 'HDD' } # type SSD
+      options = { :name => name, :size => size_in_gb, :type => type } # type SSD
       
       if hd_name == 'root'
         log_message = "#{log_message}\nBased on #{boot_image.name}"
@@ -41,7 +45,7 @@ module KnifeProfitbricks
       volume = dc.create_volume(options)
       
       volume.wait_for { ready? }
-      log "#{log_message}\nVolume '#{name}' created\n\n"
+      log "#{log_message}\nVolume '#{name}' (#{type}) created\n\n"
 
       volume
     rescue => e
