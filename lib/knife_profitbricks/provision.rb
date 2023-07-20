@@ -28,6 +28,8 @@ module KnifeProfitbricks
       chef.config[:ssh_control_master] = 'no'
       chef.config[:ssh_keepalive_interval] = 30
       chef.config[:ssh_keepalive] = true
+      # https://www.opscode.com/chef/install.sh does not working anymore
+      chef.config[:omnibus_url] = 'https://omnitruck.chef.io/install.sh'
       chef.run
     end
 
