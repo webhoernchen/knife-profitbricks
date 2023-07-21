@@ -29,7 +29,15 @@ module KnifeProfitbricks
         end
 
         def ips
-          nics.collect(&:ips).flatten
+          ipv4_ips + ipv6_ips
+        end
+
+        def ipv4_ips
+          nics.collect(&:ipv4_ips).flatten
+        end
+
+        def ipv6_ips
+          nics.collect(&:ipv6_ips).flatten
         end
 
         def list_volumes_with_order

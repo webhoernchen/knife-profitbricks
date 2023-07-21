@@ -81,7 +81,7 @@ module KnifeProfitbricks
 
         nic.delete
         nic.wait_for { ready? }
-        reset_server_ip
+        reset_server_ips
       
         log "Nic updated"
       end

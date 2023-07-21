@@ -72,11 +72,10 @@ module KnifeProfitbricks
         config.password = password
         config.global_classes = false
         config.timeout = 300
-       
-        is_v3 = config.path_prefix == 'cloudapi/v3' || 
-          config.path_prefix.split('/').map(&:downcase).include?('v3')
-        
-        config.path_prefix = 'cloudapi/v4' if is_v3
+
+        # upgrade to v6
+        path_prefix = config.path_prefix.gsub(/(cloudapi\/v)[3-5]$/, '\16')
+        config.path_prefix = path_prefix if path_prefix != config.path_prefix
       end
 
       log "Established ..."

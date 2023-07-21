@@ -51,7 +51,8 @@ module KnifeProfitbricks
         error "Can not start server!"
       end
     rescue Exception => e
-#      p e.message
+      p e.message
+      p e.backtrace
       @check_server_state_retries ||= 0
       @check_server_state_retries += 1
 
@@ -69,7 +70,7 @@ module KnifeProfitbricks
         log ''
         
         config[:force_shutdown] = old_value
-        reset_server_ip
+        reset_server_ips
   
         unless reserve_ip?
           log 'Recreate nics ...'

@@ -4,10 +4,12 @@ module KnifeProfitbricks
       module NIC
         def self.included(base)
           base.class_eval do
-            property_reader :ips, :firewallActive, :mac, :name
+            property_reader :ips, :ipv6Ips, :firewallActive, :mac, :name
             
             alias firewall_rules fwrules
             alias firewall_active? firewall_active
+            alias ipv4_ips ips
+            alias ipv6_ips ipv6Ips
           end
         end
 
