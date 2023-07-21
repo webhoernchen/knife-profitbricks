@@ -90,7 +90,7 @@ module KnifeProfitbricks
 
     def _public_lan
       log 'Find or create public lan'
-      public_lan = dc.lans.detect(&:public?) || dc.create_lan(:public => true)
+      public_lan = dc.lans.detect(&:public?) || dc.create_lan(:public => true, :ipv6CidrBlock => 'AUTO')
       public_lan.wait_for { ready? }
       log 'Public lan is ready'
       

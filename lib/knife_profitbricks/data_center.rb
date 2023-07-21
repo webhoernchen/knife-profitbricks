@@ -22,6 +22,15 @@ module KnifeProfitbricks
      
       if dc
         log "Datacenter #{dc_name.inspect} exist"
+
+        dc.lans.select do |lan|
+          lan.public? && !lan.ipv6CidrBlock
+        end.each_with_index do |lan, index|
+          log "Upgrade LAN #{index} to IPv6"
+          lan.update :ipv6CidrBlock => 'AUTO'
+          lan.wait_for { ready? && ipv6CidrBlock }
+          log "Upgrade LAN #{index} to IPv6 - finished"
+        end
       else
         log "Datacenter #{dc_name.inspect} not exist"
         log "Create Datacenter #{dc_name.inspect}"

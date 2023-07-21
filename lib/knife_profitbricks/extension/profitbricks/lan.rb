@@ -4,8 +4,10 @@ module KnifeProfitbricks
       module LAN
         def self.included(base)
           base.class_eval do
-            property_reader :public
+            property_reader :public, :ipv6CidrBlock
+
             alias public? public
+            alias ipv6_cidr_block ipv6CidrBlock
           end
         end
       end
