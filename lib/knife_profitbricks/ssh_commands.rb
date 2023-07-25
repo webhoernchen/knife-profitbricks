@@ -223,7 +223,7 @@ module KnifeProfitbricks
       log "new: #{password}"
       log ''
 
-      ssh_options = {:verify_host_key => false}
+      ssh_options = {:verify_host_key => :never}
 
       if old_password
         login_user = user
