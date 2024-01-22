@@ -35,7 +35,7 @@ module KnifeProfitbricks
         options[:image] = boot_image.id
         
         if boot_image.public
-          options[:imagePassword] = root_password
+          #options[:imagePassword] = root_password
           options[:sshKeys] = [ssh_key]
         end
       else
