@@ -13,7 +13,8 @@ module KnifeProfitbricks
       :amd => 'AMD_OPTERON',
       :intel => 'INTEL_XEON',
       :intel_xeon => 'INTEL_XEON',
-      :intel_skylake => 'INTEL_SKYLAKE'
+      :intel_skylake => 'INTEL_SKYLAKE',
+      :intel_icelake => 'INTEL_ICELAKE'
     }
 
     CPU_DEFAULT_KEY = :amd
