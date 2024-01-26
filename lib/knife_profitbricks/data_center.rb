@@ -28,7 +28,7 @@ module KnifeProfitbricks
         end.each_with_index do |lan, index|
           log "Upgrade LAN #{index} to IPv6"
           lan.update :ipv6CidrBlock => 'AUTO'
-          lan.wait_for { ready? && ipv6CidrBlock }
+          lan.wait_for { ready? && reload && ipv6CidrBlock }
           log "Upgrade LAN #{index} to IPv6 - finished"
         end
       else
