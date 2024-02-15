@@ -38,6 +38,7 @@ module ProfitBricks::Billing
     params = {
       :user => ProfitBricks::Config.username,
       :password => ProfitBricks::Config.password,
+      :headers => ProfitBricks::Config.headers,
       :debug => ProfitBricks::Config.debug,
       :omit_default_port => true,
       :query => { :depth => ProfitBricks::Config.depth },

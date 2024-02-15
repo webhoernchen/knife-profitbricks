@@ -7,9 +7,16 @@ As Environment
  * export PROFITBRICKS_USER=user
  * export PROFITBRICKS_PASSWORD=secure
 
+OR
+
+ * export PROFITBRICKS_TOKEN=ANY_TOKEN
+ * export PROFITBRICKS_TOKEN_EXPIRE=DATE_AS_STRING
+ * export PROFITBRICKS_TOKEN_NAME=TOCKEN_ID
+
 As data bag
 
  * Specify user and password in the data bag
+ * Or token, token_expire and token_name in the data bag
  * and set the name of the data bag
   * in your config (.chef/knife.rb)
 

@@ -34,6 +34,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/billing'
           require 'knife_profitbricks/extension/profitbricks/billing/traffic'
           require 'knife_profitbricks/extension/excon/socket'
+          require 'ostruct'
           
           Chef::Knife.load_deps
           
@@ -64,12 +65,38 @@ module KnifeProfitbricks
 
     private
     def establish_connection
-      user, password = detect_user_and_password
-      log "Establish connection to ProfitBricks for #{user.inspect}"
-      
+      log "Establish connection to ProfitBricks for #{auth_config.user.inspect}"
+
+      set_config_username_and_password
+      set_config_api_token
+      set_config_defaults
+
+      log "Established ..."
+      log "\n"
+    end
+
+    def set_config_username_and_password
+      return unless auth_config.user && auth_config.password
+
+      ProfitBricks::Config.password = auth_config.password
+      ProfitBricks::Config.username = auth_config.user
+    end
+
+    def set_config_api_token
+      return unless auth_config.token
+
+      expire = Time.new auth_config.token_expire
+      now = Time.now + 3600 * 12 # 12 hours
+
+      error "Token must be valid for 12 hours (#{auth_config.token_name} - #{auth_config.token_expire})" if expire <= now
+
+      ProfitBricks::Config.headers = {
+        'Authorization' => "Bearer #{auth_config.token}"
+      }
+    end
+
+    def set_config_defaults
       ProfitBricks.configure do |config|
-        config.username = user
-        config.password = password
         config.global_classes = false
         config.timeout = 300
 
@@ -77,9 +104,6 @@ module KnifeProfitbricks
         path_prefix = config.path_prefix.gsub(/(cloudapi\/v)[3-5]$/, '\16')
         config.path_prefix = path_prefix if path_prefix != config.path_prefix
       end
-
-      log "Established ..."
-      log "\n"
     end
 
     def load_data_bag(*args)
@@ -89,13 +113,21 @@ module KnifeProfitbricks
       Chef::EncryptedDataBagItem.new(content, secret_key).to_hash
     end
 
-    def detect_user_and_password
-      if data_bag_name = Chef::Config[:knife][:profitbricks_data_bag]
+    def auth_config
+      @auth_config ||= if data_bag_name = Chef::Config[:knife][:profitbricks_data_bag]
         data_bag = load_data_bag 'profitbricks', data_bag_name
 
-        [data_bag['user'], data_bag['password']]
+        OpenStruct.new user: data_bag['user'],
+          password: data_bag['password'],
+          token: data_bag['token'],
+          token_expire: data_bag['token_expire'],
+          token_name: data_bag['token_name']
       else
-        [ENV['PROFITBRICKS_USER'], ENV['PROFITBRICKS_PASSWORD']]
+        OpenStruct.new user: ENV['PROFITBRICKS_USER'],
+          password: ENV['PROFITBRICKS_PASSWORD'],
+          token: ENV['PROFITBRICKS_TOKEN'],
+          token_expire: ENV['PROFITBRICKS_TOKEN_EXPIRE'],
+          token_name: ENV['PROFITBRICKS_TOKEN_NAME']
       end
     end
 
