@@ -10,8 +10,8 @@ class ProfitBricks::Billing::TrafficTable
 
   def self.by_period(period)
     params = {:method => :get,
-      :path => "/#{contract_id}/traffic/#{period}",
-      :query => {:nic => true},
+      :path => "/billing/#{contract_id}/traffic/#{period}",
+      # :query => {:ip => true},
       :expects => 200}
     body = ProfitBricks::Billing.request params
 #      p body

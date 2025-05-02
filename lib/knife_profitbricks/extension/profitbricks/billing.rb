@@ -10,7 +10,7 @@ module ProfitBricks::Billing
 
   def self.companies
     response = request(:method => :get,
-      :path => '/profile',
+      :path => '/billing/profile',
       :expects => 200
     )
     response['companies']
@@ -33,7 +33,7 @@ module ProfitBricks::Billing
 
   private
   def self.connect
-    url = 'https://billingapi.profitbricks.com'
+    url = 'https://api.ionos.com/billing/'
 
     params = {
       :user => ProfitBricks::Config.username,
