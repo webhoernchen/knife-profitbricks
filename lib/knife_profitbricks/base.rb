@@ -35,6 +35,7 @@ module KnifeProfitbricks
           require 'knife_profitbricks/extension/profitbricks/billing/traffic'
           require 'knife_profitbricks/extension/excon/socket'
           require 'ostruct'
+          require 'date'
           
           Chef::Knife.load_deps
           
@@ -85,7 +86,7 @@ module KnifeProfitbricks
     def set_config_api_token
       return unless auth_config.token
 
-      expire = Time.new auth_config.token_expire
+      expire = DateTime.strptime(auth_config.token_expire, '%Y-%m-%d %H:%M:%S %Z').to_time
       now = Time.now + 3600 * 12 # 12 hours
 
       error "Token must be valid for 12 hours (#{auth_config.token_name} - #{auth_config.token_expire})" if expire <= now
